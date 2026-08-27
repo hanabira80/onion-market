@@ -32,6 +32,13 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# local student roster / products (CSV and admin writes here)
+/data/*.json
+
+# uploaded product photos
+/public/uploads
 
 # vercel
 .vercel
