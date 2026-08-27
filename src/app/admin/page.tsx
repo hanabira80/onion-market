@@ -3,6 +3,7 @@ import Link from "next/link"
 
 import { buttonVariants } from "@/components/ui/button"
 import { requireAdmin } from "@/lib/auth"
+import { countOrdersByStatus } from "@/lib/orders"
 import { getProductStats } from "@/lib/products"
 
 export const metadata: Metadata = {
@@ -19,7 +20,10 @@ const LINKS = [
 
 export default async function AdminPage() {
   await requireAdmin()
-  const stats = await getProductStats()
+  const [stats, awaitingPickup] = await Promise.all([
+    getProductStats(),
+    countOrdersByStatus("awaiting_pickup"),
+  ])
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-10">
@@ -27,7 +31,7 @@ export default async function AdminPage() {
       <p className="mt-2 text-muted-foreground">
         받은 굿즈를 올리고, 기부한 학생에게 포인트를 주세요.
       </p>
-      <dl className="mt-8 grid gap-4 sm:grid-cols-2">
+      <dl className="mt-8 grid gap-4 sm:grid-cols-3">
         <div className="rounded-xl bg-card p-4 ring-1 ring-foreground/10">
           <dt className="text-sm text-muted-foreground">전체 상품</dt>
           <dd className="mt-1 text-2xl font-semibold">{stats.total}</dd>
@@ -35,6 +39,10 @@ export default async function AdminPage() {
         <div className="rounded-xl bg-card p-4 ring-1 ring-foreground/10">
           <dt className="text-sm text-muted-foreground">판매중 (수량 있음)</dt>
           <dd className="mt-1 text-2xl font-semibold">{stats.onSale}</dd>
+        </div>
+        <div className="rounded-xl bg-card p-4 ring-1 ring-foreground/10">
+          <dt className="text-sm text-muted-foreground">수령 대기</dt>
+          <dd className="mt-1 text-2xl font-semibold">{awaitingPickup}건</dd>
         </div>
       </dl>
       <div className="mt-8 flex flex-wrap gap-2">

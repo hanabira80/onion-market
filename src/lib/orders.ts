@@ -75,6 +75,19 @@ export async function listOrdersByStudent(studentId: string) {
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 }
 
+export async function listOrders(status?: OrderStatus) {
+  const orders = await readOrders()
+  const filtered = status
+    ? orders.filter((order) => order.status === status)
+    : orders
+  return filtered.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+}
+
+export async function countOrdersByStatus(status: OrderStatus) {
+  const orders = await readOrders()
+  return orders.filter((order) => order.status === status).length
+}
+
 export async function purchaseProduct(
   studentId: string,
   productId: string
@@ -282,6 +295,55 @@ export async function cancelOrder(
       order: orders[orderIndex],
       remainingPoints,
       productId: order.productId,
+    } as const
+  })
+}
+
+export type CompleteFailureCode = "not_found" | "not_completable"
+
+export type CompleteResult =
+  | { ok: true; order: OrderRecord }
+  | { ok: false; code: CompleteFailureCode; error: string }
+
+export async function completeOrder(orderId: string): Promise<CompleteResult> {
+  return withLock(async () => {
+    const orders = await readOrders()
+    const orderIndex = orders.findIndex((order) => order.id === orderId)
+    const order = orderIndex === -1 ? null : orders[orderIndex]
+
+    if (!order) {
+      return {
+        ok: false,
+        code: "not_found",
+        error: "주문을 찾지 못했어요.",
+      } as const
+    }
+
+    if (order.status === "cancelled") {
+      return {
+        ok: false,
+        code: "not_completable",
+        error: "취소된 주문은 수령 처리할 수 없어요.",
+      } as const
+    }
+
+    if (order.status !== "awaiting_pickup") {
+      return {
+        ok: false,
+        code: "not_completable",
+        error: "이미 수령 완료예요.",
+      } as const
+    }
+
+    orders[orderIndex] = {
+      ...order,
+      status: "completed",
+    }
+    await writeJsonFile(ORDERS_FILE, orders)
+
+    return {
+      ok: true,
+      order: orders[orderIndex],
     } as const
   })
 }
