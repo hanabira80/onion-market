@@ -26,6 +26,7 @@ export async function toggleWishlistAction(productId: string) {
   revalidatePath("/")
   revalidatePath(`/products/${productId}`)
   revalidatePath("/me")
+  revalidatePath("/me/wishlist")
 }
 
 export async function purchaseProductAction(
@@ -48,5 +49,6 @@ export async function purchaseProductAction(
   revalidatePath("/")
   revalidatePath(`/products/${productId}`)
   revalidatePath("/me")
+  revalidatePath("/me/orders")
   redirect(`/products/${productId}?purchased=1`)
 }
