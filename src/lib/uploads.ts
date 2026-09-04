@@ -1,7 +1,6 @@
-import { mkdir, writeFile } from "node:fs/promises"
-import path from "node:path"
+import { createServiceClient } from "@/lib/supabase"
 
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "products")
+const BUCKET = "product-images"
 const MAX_BYTES = 2 * 1024 * 1024
 
 const TYPES: Record<string, string> = {
@@ -24,8 +23,17 @@ export async function saveProductImage(file: File): Promise<string | { error: st
     return { error: "JPG, PNG, WEBP만 올릴 수 있어요." }
   }
 
-  const filename = `${crypto.randomUUID()}.${ext}`
-  await mkdir(UPLOAD_DIR, { recursive: true })
-  await writeFile(path.join(UPLOAD_DIR, filename), Buffer.from(await file.arrayBuffer()))
-  return `/uploads/products/${filename}`
+  const path = `products/${crypto.randomUUID()}.${ext}`
+  const supabase = createServiceClient()
+  const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+    contentType: file.type,
+    upsert: false,
+  })
+
+  if (error) {
+    return { error: "사진을 올리지 못했어요." }
+  }
+
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)
+  return data.publicUrl
 }

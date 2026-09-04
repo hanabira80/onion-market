@@ -1,4 +1,4 @@
-import { readJsonFile, withLock, writeJsonFile } from "@/lib/json-store"
+import { createServiceClient, throwIfError } from "@/lib/supabase"
 
 export type WishlistItem = {
   studentId: string
@@ -6,18 +6,29 @@ export type WishlistItem = {
   createdAt: string
 }
 
-const FILE = "wishlist.json"
+type WishlistRow = {
+  student_id: string
+  product_id: string
+  created_at: string
+}
 
-async function readAll(): Promise<WishlistItem[]> {
-  const parsed = await readJsonFile<WishlistItem[]>(FILE, [])
-  return Array.isArray(parsed) ? parsed : []
+function mapItem(row: WishlistRow): WishlistItem {
+  return {
+    studentId: row.student_id,
+    productId: row.product_id,
+    createdAt: row.created_at,
+  }
 }
 
 export async function listWishlistByStudent(studentId: string) {
-  const items = await readAll()
-  return items
-    .filter((item) => item.studentId === studentId)
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  const supabase = createServiceClient()
+  const { data, error } = await supabase
+    .from("wishlist")
+    .select("*")
+    .eq("student_id", studentId)
+    .order("created_at", { ascending: false })
+  throwIfError(error)
+  return ((data ?? []) as WishlistRow[]).map(mapItem)
 }
 
 export async function listWishedProductIds(studentId: string) {
@@ -26,24 +37,29 @@ export async function listWishedProductIds(studentId: string) {
 }
 
 export async function toggleWishlist(studentId: string, productId: string) {
-  return withLock(async () => {
-    const items = await readAll()
-    const index = items.findIndex(
-      (item) => item.studentId === studentId && item.productId === productId
-    )
+  const supabase = createServiceClient()
+  const { data: existing, error: readError } = await supabase
+    .from("wishlist")
+    .select("student_id")
+    .eq("student_id", studentId)
+    .eq("product_id", productId)
+    .maybeSingle()
+  throwIfError(readError)
 
-    if (index >= 0) {
-      items.splice(index, 1)
-      await writeJsonFile(FILE, items)
-      return { wished: false }
-    }
+  if (existing) {
+    const { error } = await supabase
+      .from("wishlist")
+      .delete()
+      .eq("student_id", studentId)
+      .eq("product_id", productId)
+    throwIfError(error)
+    return { wished: false }
+  }
 
-    items.push({
-      studentId,
-      productId,
-      createdAt: new Date().toISOString(),
-    })
-    await writeJsonFile(FILE, items)
-    return { wished: true }
+  const { error } = await supabase.from("wishlist").insert({
+    student_id: studentId,
+    product_id: productId,
   })
+  throwIfError(error)
+  return { wished: true }
 }
