@@ -19,7 +19,11 @@ const LINKS = [
 ]
 
 export default async function AdminPage() {
-  await requireAdmin()
+  const actor = await requireAdmin()
+  const links =
+    actor?.kind === "teacher" && actor.adminLevel === "master"
+      ? [...LINKS, { href: "/admin/staff", label: "선생님 관리" }]
+      : LINKS
   const [stats, awaitingPickup] = await Promise.all([
     getProductStats(),
     countOrdersByStatus("awaiting_pickup"),
@@ -46,7 +50,7 @@ export default async function AdminPage() {
         </div>
       </dl>
       <div className="mt-8 flex flex-wrap gap-2">
-        {LINKS.map((link) => (
+        {links.map((link) => (
           <Link
             key={link.href}
             href={link.href}

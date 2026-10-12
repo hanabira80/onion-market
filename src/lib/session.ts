@@ -5,12 +5,24 @@ export const SESSION_COOKIE = "onion_session"
 export const SETUP_COOKIE = "onion_setup"
 
 export type StudentRole = "student" | "admin"
+export type AdminLevel = "master" | "sub"
 
-export type SessionPayload = {
+export type StudentSession = {
+  kind: "student"
   studentId: string
   name: string
   role: StudentRole
 }
+
+export type TeacherSession = {
+  kind: "teacher"
+  email: string
+  name: string
+  role: "admin"
+  adminLevel: AdminLevel
+}
+
+export type SessionPayload = StudentSession | TeacherSession
 
 export type SetupPurpose = "setup" | "login" | "reset"
 
@@ -51,7 +63,22 @@ function cookieOptions(maxAge: number) {
 }
 
 export async function createSession(payload: SessionPayload) {
-  const token = await signToken(payload, SESSION_MAX_AGE)
+  const claims: Record<string, string> =
+    payload.kind === "teacher"
+      ? {
+          kind: "teacher",
+          email: payload.email,
+          name: payload.name,
+          role: "admin",
+          adminLevel: payload.adminLevel,
+        }
+      : {
+          kind: "student",
+          studentId: payload.studentId,
+          name: payload.name,
+          role: payload.role,
+        }
+  const token = await signToken(claims, SESSION_MAX_AGE)
   const jar = await cookies()
   jar.set(SESSION_COOKIE, token, cookieOptions(SESSION_MAX_AGE))
 }
@@ -71,15 +98,7 @@ export async function readSession(): Promise<SessionPayload | null> {
 
   try {
     const { payload } = await jwtVerify(token, getSecret())
-    const studentId = String(payload.studentId ?? "")
-    const name = String(payload.name ?? "")
-    const role = payload.role === "admin" ? "admin" : "student"
-
-    if (!studentId || !name) {
-      return null
-    }
-
-    return { studentId, name, role }
+    return parseSessionPayload(payload)
   } catch {
     return null
   }
@@ -131,16 +150,40 @@ export async function readSessionFromToken(
 
   try {
     const { payload } = await jwtVerify(token, getSecret())
-    const studentId = String(payload.studentId ?? "")
-    const name = String(payload.name ?? "")
-    const role = payload.role === "admin" ? "admin" : "student"
-
-    if (!studentId || !name) {
-      return null
-    }
-
-    return { studentId, name, role }
+    return parseSessionPayload(payload)
   } catch {
     return null
   }
+}
+
+function parseSessionPayload(payload: Record<string, unknown>): SessionPayload | null {
+  const name = String(payload.name ?? "")
+
+  if (payload.kind === "teacher") {
+    const email = String(payload.email ?? "")
+      .trim()
+      .toLowerCase()
+    const adminLevel = payload.adminLevel === "master" ? "master" : "sub"
+
+    if (!email) {
+      return null
+    }
+
+    return {
+      kind: "teacher",
+      email,
+      name: name || email,
+      role: "admin",
+      adminLevel,
+    }
+  }
+
+  const studentId = String(payload.studentId ?? "")
+  const role = payload.role === "admin" ? "admin" : "student"
+
+  if (!studentId || !name) {
+    return null
+  }
+
+  return { kind: "student", studentId, name, role }
 }

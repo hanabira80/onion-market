@@ -4,7 +4,8 @@ import { useActionState } from "react"
 import Link from "next/link"
 
 import { lookupStudentId, loginWithPassword, type ActionState } from "@/app/login/actions"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import {
   Field,
   FieldDescription,
@@ -17,9 +18,10 @@ import { STUDENT_ID_HINT } from "@/lib/student-id"
 
 type LoginFormProps = {
   step: "id" | "password"
+  teacherMessage?: string | null
 }
 
-export function LoginForm({ step }: LoginFormProps) {
+export function LoginForm({ step, teacherMessage }: LoginFormProps) {
   const action = step === "password" ? loginWithPassword : lookupStudentId
   const [state, formAction, pending] = useActionState<ActionState, FormData>(
     action,
@@ -68,6 +70,18 @@ export function LoginForm({ step }: LoginFormProps) {
           다시 정하기
         </Link>
       </p>
+      {step === "id" ? (
+        <div className="grid gap-3 border-t pt-5">
+          {teacherMessage ? <p className="text-center text-sm text-destructive">{teacherMessage}</p> : null}
+          <Link
+            href="/auth/google"
+            className={cn(buttonVariants({ variant: "outline" }), "h-11 w-full")}
+          >
+            선생님 로그인
+          </Link>
+          <p className="text-center text-xs text-muted-foreground">구글 계정으로 들어와요.</p>
+        </div>
+      ) : null}
     </form>
   )
 }

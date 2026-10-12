@@ -23,6 +23,11 @@ CREATE TABLE IF NOT EXISTS onion_market.students (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS onion_market.sub_admins (
+  email text PRIMARY KEY,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS onion_market.products (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name text NOT NULL,
@@ -70,6 +75,7 @@ CREATE INDEX IF NOT EXISTS wishlist_student_id_idx ON onion_market.wishlist (stu
 CREATE INDEX IF NOT EXISTS point_ledger_created_at_idx ON onion_market.point_ledger (created_at DESC);
 
 ALTER TABLE onion_market.students ENABLE ROW LEVEL SECURITY;
+ALTER TABLE onion_market.sub_admins ENABLE ROW LEVEL SECURITY;
 ALTER TABLE onion_market.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE onion_market.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE onion_market.wishlist ENABLE ROW LEVEL SECURITY;

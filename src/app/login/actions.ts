@@ -58,6 +58,7 @@ export async function loginWithPassword(
   }
 
   await createSession({
+    kind: "student",
     studentId: student.studentId,
     name: student.name,
     role: student.role,
@@ -154,7 +155,7 @@ async function setPasswordAndSignIn(
     return false
   }
 
-  await createSession({ studentId, name, role })
+  await createSession({ kind: "student", studentId, name, role })
   await clearSetup()
   return true
 }
