@@ -69,52 +69,64 @@ function parseRole(value: string | undefined): StudentRole {
   return value?.trim().toLowerCase() === "admin" ? "admin" : "student"
 }
 
-export function parseStudentCsv(raw: string): CsvParseResult {
-  const lines = raw
-    .replace(/^\uFEFF/, "")
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-
-  if (lines.length < 2) {
-    return { ok: false, error: "헤더와 학생 행이 있는 CSV를 올려 주세요." }
-  }
-
-  const headers = splitCsvLine(lines[0]).map((header) => {
+function mapHeaders(cells: string[]) {
+  return cells.map((header) => {
     const key = HEADER_ALIASES[normalizeHeader(header)]
     return key ?? normalizeHeader(header)
   })
+}
 
-  if (!headers.includes("studentId") || !headers.includes("name")) {
+export function parseStudentTable(matrix: string[][]): CsvParseResult {
+  const filled = matrix
+    .map((row) => row.map((cell) => cell.trim()))
+    .filter((row) => row.some(Boolean))
+
+  const headerIndex = filled.findIndex((row) => {
+    const headers = mapHeaders(row)
+    return headers.includes("studentId") && headers.includes("name")
+  })
+
+  if (headerIndex === -1) {
     return {
       ok: false,
-      error: "필수 칸이 없어요. 학번, 이름, 학년, 반, 번호, role 이 필요해요.",
+      error: "학번, 이름 칸이 있는 명부를 올려 주세요.",
     }
   }
 
+  const headers = mapHeaders(filled[headerIndex])
   const rows: CsvImportRow[] = []
+  const seen = new Set<string>()
 
-  for (let lineIndex = 1; lineIndex < lines.length; lineIndex += 1) {
-    const cells = splitCsvLine(lines[lineIndex])
+  for (let index = headerIndex + 1; index < filled.length; index += 1) {
+    const cells = filled[index]
     const record: Record<string, string> = {}
+    const lineNumber = index + 1
 
-    headers.forEach((header, index) => {
-      record[header] = cells[index] ?? ""
+    headers.forEach((header, cellIndex) => {
+      record[header] = cells[cellIndex] ?? ""
     })
 
     const parsedId = parseStudentId(record.studentId ?? "")
     if (!parsedId.ok) {
       return {
         ok: false,
-        error: `${lineIndex + 1}행 학번 오류: ${parsedId.error}`,
+        error: `${lineNumber}행 학번 오류: ${parsedId.error}`,
+      }
+    }
+
+    if (seen.has(parsedId.value.studentId)) {
+      return {
+        ok: false,
+        error: `${lineNumber}행 학번 ${parsedId.value.studentId}이 파일 안에 두 번 있어요.`,
       }
     }
 
     const name = (record.name ?? "").trim()
     if (!name) {
-      return { ok: false, error: `${lineIndex + 1}행에 이름이 없어요.` }
+      return { ok: false, error: `${lineNumber}행에 이름이 없어요.` }
     }
 
+    seen.add(parsedId.value.studentId)
     rows.push({
       studentId: parsedId.value.studentId,
       name,
@@ -125,5 +137,23 @@ export function parseStudentCsv(raw: string): CsvParseResult {
     })
   }
 
+  if (rows.length === 0) {
+    return { ok: false, error: "저장할 학생이 없어요." }
+  }
+
   return { ok: true, rows }
+}
+
+export function parseStudentCsv(raw: string): CsvParseResult {
+  const lines = raw
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  if (lines.length < 2) {
+    return { ok: false, error: "헤더와 학생 행이 있는 파일을 올려 주세요." }
+  }
+
+  return parseStudentTable(lines.map(splitCsvLine))
 }

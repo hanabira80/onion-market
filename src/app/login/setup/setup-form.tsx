@@ -30,7 +30,7 @@ export function SetupForm({ name, submitLabel }: SetupFormProps) {
   return (
     <form action={formAction} className="grid gap-5">
       <div className="rounded-xl bg-accent px-4 py-3">
-        <p className="text-sm text-muted-foreground">명단에 있는 이름</p>
+        <p className="text-sm text-muted-foreground">이 학번의 학생이 맞나요?</p>
         <p className="mt-1 text-xl font-semibold tracking-tight">{name}</p>
       </div>
       <FieldGroup>
@@ -42,7 +42,7 @@ export function SetupForm({ name, submitLabel }: SetupFormProps) {
             className="mt-1 size-4 rounded border-input"
             required
           />
-          본인이 맞아요. 이 이름으로 비밀번호를 정할게요.
+          {name} 님이 맞아요. 이 이름으로 비밀번호를 정할게요.
         </label>
         <Field>
           <FieldLabel htmlFor="password">새 비밀번호</FieldLabel>

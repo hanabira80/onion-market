@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 const LINKS = [
   { href: "/admin/products/new", label: "새 상품 올리기" },
   { href: "/admin/points", label: "포인트 지급" },
-  { href: "/admin/students/import", label: "명단 CSV" },
+  { href: "/admin/students/import", label: "명단 올리기" },
   { href: "/admin/orders", label: "수령 처리" },
 ]
 

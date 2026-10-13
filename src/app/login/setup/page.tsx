@@ -27,7 +27,7 @@ export default async function LoginSetupPage() {
   return (
     <AuthShell
       title="이름 확인"
-      description="선생님이 넣어 둔 이름이 맞는지 보고, 비밀번호를 정하세요."
+      description="학번에 적힌 이름이 본인이 맞는지 확인한 뒤, 비밀번호를 정하세요."
     >
       <SetupForm name={student.name} submitLabel="비밀번호 정하고 들어가기" />
     </AuthShell>

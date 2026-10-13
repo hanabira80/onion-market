@@ -3,6 +3,7 @@
 import { requireAdmin } from "@/lib/auth"
 import { parseStudentCsv } from "@/lib/csv"
 import { upsertStudents } from "@/lib/roster"
+import { parseStudentWorkbook } from "@/lib/xlsx-roster"
 
 export type ImportState =
   | { error: string }
@@ -18,11 +19,15 @@ export async function importStudentsCsv(
   const file = formData.get("file")
 
   if (!(file instanceof File) || file.size === 0) {
-    return { error: "CSV 파일을 선택해 주세요." }
+    return { error: "엑셀 파일을 선택해 주세요." }
   }
 
-  const text = await file.text()
-  const parsed = parseStudentCsv(text)
+  const filename = file.name.toLowerCase()
+  const parsed = filename.endsWith(".xlsx")
+    ? await parseStudentWorkbook(await file.arrayBuffer())
+    : filename.endsWith(".csv")
+      ? parseStudentCsv(await file.text())
+      : { ok: false as const, error: "엑셀(.xlsx) 파일을 올려 주세요." }
 
   if (!parsed.ok) {
     return { error: parsed.error }
