@@ -17,6 +17,9 @@ export function SiteHeader({ student, points }: SiteHeaderProps) {
           양파마켓
         </Link>
         <nav className="flex items-center gap-1">
+          {student.kind === "teacher" ? (
+            <p className="max-w-36 truncate px-2 text-sm">{student.name}</p>
+          ) : null}
           {typeof points === "number" ? (
             <p className="px-2 text-sm font-medium tabular-nums">{points}P</p>
           ) : null}
@@ -28,9 +31,11 @@ export function SiteHeader({ student, points }: SiteHeaderProps) {
               관리
             </Link>
           ) : null}
-          <Link href="/me" className={buttonVariants({ variant: "ghost", size: "sm" })}>
-            마이
-          </Link>
+          {student.kind === "student" ? (
+            <Link href="/me" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+              마이
+            </Link>
+          ) : null}
           <form action={logoutAction}>
             <Button type="submit" variant="ghost" size="sm">
               로그아웃

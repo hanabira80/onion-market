@@ -21,14 +21,18 @@ export default async function AdminLayout({
     redirect("/")
   }
 
-  const record = student ? await getStudentById(student.studentId) : null
+  const record = student?.kind === "student" ? await getStudentById(student.studentId) : null
+  const isMaster = student?.kind === "teacher" && student.adminLevel === "master"
 
   return (
     <>
       {student ? (
-        <SiteHeader student={student} points={record?.pointsBalance ?? 0} />
+        <SiteHeader
+          student={student}
+          points={student.kind === "student" ? (record?.pointsBalance ?? 0) : undefined}
+        />
       ) : null}
-      {student?.role === "admin" ? <AdminNav /> : null}
+      {student?.role === "admin" ? <AdminNav showStaff={isMaster} /> : null}
       {children}
     </>
   )

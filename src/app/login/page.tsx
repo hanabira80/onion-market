@@ -11,12 +11,18 @@ export const metadata: Metadata = {
   description: "학번으로 양파마켓에 들어옵니다.",
 }
 
+const TEACHER_MESSAGES: Record<string, string> = {
+  denied: "이 구글 계정은 선생님 명단에 없어요.",
+  failed: "구글 로그인에 실패했어요. 다시 시도해 주세요.",
+  unconfigured: "구글 로그인이 아직 연결되지 않았어요.",
+}
+
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ step?: string }>
+  searchParams: Promise<{ step?: string; teacher?: string }>
 }) {
-  const { step } = await searchParams
+  const { step, teacher } = await searchParams
   const setup = await readSetup()
   const showPassword = step === "password" && setup?.purpose === "login"
   const count = await getStudentCount()
@@ -36,7 +42,10 @@ export default async function LoginPage({
             : "명단에 있는 학번만 들어올 수 있어요."
       }
     >
-      <LoginForm step={showPassword ? "password" : "id"} />
+      <LoginForm
+        step={showPassword ? "password" : "id"}
+        teacherMessage={teacher ? TEACHER_MESSAGES[teacher] : null}
+      />
     </AuthShell>
   )
 }

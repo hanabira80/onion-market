@@ -41,7 +41,7 @@ export async function grantPointsAction(
     studentIds: selected,
     amount,
     memo,
-    grantedBy: admin.studentId,
+    grantedBy: admin.kind === "teacher" ? admin.email : admin.studentId,
   })
 
   if (result.found.length === 0) {

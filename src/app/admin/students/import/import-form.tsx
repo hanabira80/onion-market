@@ -26,17 +26,17 @@ export function ImportForm() {
     <form action={formAction} className="grid gap-5">
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="file">CSV 파일</FieldLabel>
+          <FieldLabel htmlFor="file">엑셀 파일</FieldLabel>
           <Input
             id="file"
             name="file"
             type="file"
-            accept=".csv,text/csv"
+            accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
             className="h-11 pt-1.5"
             required
           />
           <FieldDescription>
-            칸 순서: 학번, 이름, 학년, 반, 번호, role (student 또는 admin)
+            첫 줄에 학번, 이름. .xlsx를 그대로 올리면 됩니다.
           </FieldDescription>
         </Field>
         {state && "error" in state ? <FieldError>{state.error}</FieldError> : null}

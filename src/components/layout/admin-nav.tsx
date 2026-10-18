@@ -14,13 +14,14 @@ const LINKS = [
   { href: "/admin/orders", label: "수령" },
 ]
 
-export function AdminNav() {
+export function AdminNav({ showStaff = false }: { showStaff?: boolean }) {
   const pathname = usePathname()
+  const links = showStaff ? [...LINKS, { href: "/admin/staff", label: "선생님" }] : LINKS
 
   return (
     <nav className="border-b bg-background">
       <div className="mx-auto flex w-full max-w-5xl gap-1 overflow-x-auto px-4 py-2">
-        {LINKS.map((link) => {
+        {links.map((link) => {
           const active =
             link.href === "/admin"
               ? pathname === "/admin"

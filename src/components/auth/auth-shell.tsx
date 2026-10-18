@@ -40,7 +40,7 @@ export async function AuthShell({ title, description, children }: AuthShellProps
               href="/admin/students/import"
               className="text-muted-foreground underline-offset-4 hover:underline"
             >
-              처음이면 명단 CSV부터
+              처음이면 명단 엑셀부터
             </Link>
           </p>
         ) : null}
