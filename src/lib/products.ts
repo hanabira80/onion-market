@@ -1,5 +1,6 @@
 import type { ProductCategory, ProductCondition, SaleStatus } from "@/lib/catalog"
-import { createServiceClient, throwIfError } from "@/lib/supabase"
+import { readJsonFile, withLock, writeJsonFile } from "@/lib/json-store"
+import { createServiceClient, isSupabaseConfigured, throwIfError } from "@/lib/supabase"
 
 export type ProductRecord = {
   id: string
@@ -14,6 +15,8 @@ export type ProductRecord = {
   updatedAt: string
 }
 
+export type ProductInput = Omit<ProductRecord, "id" | "createdAt" | "updatedAt">
+
 type ProductRow = {
   id: string
   name: string
@@ -26,6 +29,8 @@ type ProductRow = {
   created_at: string
   updated_at: string
 }
+
+const FILE = "products.json"
 
 function mapProduct(row: ProductRow): ProductRecord {
   return {
@@ -54,7 +59,21 @@ function toRow(input: ProductInput) {
   }
 }
 
+async function readAllLocal(): Promise<ProductRecord[]> {
+  const parsed = await readJsonFile<ProductRecord[]>(FILE, [])
+  return Array.isArray(parsed) ? parsed : []
+}
+
+async function writeAllLocal(products: ProductRecord[]) {
+  await writeJsonFile(FILE, products)
+}
+
 export async function listProducts() {
+  if (!isSupabaseConfigured()) {
+    const products = await readAllLocal()
+    return products.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  }
+
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from("products")
@@ -65,6 +84,11 @@ export async function listProducts() {
 }
 
 export async function getProductById(id: string) {
+  if (!isSupabaseConfigured()) {
+    const products = await readAllLocal()
+    return products.find((product) => product.id === id) ?? null
+  }
+
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from("products")
@@ -85,9 +109,23 @@ export async function getProductStats() {
   }
 }
 
-export type ProductInput = Omit<ProductRecord, "id" | "createdAt" | "updatedAt">
-
 export async function createProduct(input: ProductInput) {
+  if (!isSupabaseConfigured()) {
+    return withLock(async () => {
+      const products = await readAllLocal()
+      const now = new Date().toISOString()
+      const product: ProductRecord = {
+        ...input,
+        id: crypto.randomUUID(),
+        createdAt: now,
+        updatedAt: now,
+      }
+      products.push(product)
+      await writeAllLocal(products)
+      return product
+    })
+  }
+
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from("products")
@@ -99,6 +137,27 @@ export async function createProduct(input: ProductInput) {
 }
 
 export async function updateProduct(id: string, input: ProductInput) {
+  if (!isSupabaseConfigured()) {
+    return withLock(async () => {
+      const products = await readAllLocal()
+      const index = products.findIndex((product) => product.id === id)
+
+      if (index === -1) {
+        return null
+      }
+
+      const product: ProductRecord = {
+        ...products[index],
+        ...input,
+        id,
+        updatedAt: new Date().toISOString(),
+      }
+      products[index] = product
+      await writeAllLocal(products)
+      return product
+    })
+  }
+
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from("products")
@@ -114,6 +173,20 @@ export async function updateProduct(id: string, input: ProductInput) {
 }
 
 export async function deleteProduct(id: string) {
+  if (!isSupabaseConfigured()) {
+    return withLock(async () => {
+      const products = await readAllLocal()
+      const next = products.filter((product) => product.id !== id)
+
+      if (next.length === products.length) {
+        return false
+      }
+
+      await writeAllLocal(next)
+      return true
+    })
+  }
+
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from("products")

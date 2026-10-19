@@ -1,5 +1,6 @@
+import { readJsonFile, withLock, writeJsonFile } from "@/lib/json-store"
 import type { StudentRole } from "@/lib/session"
-import { createServiceClient, throwIfError } from "@/lib/supabase"
+import { createServiceClient, isSupabaseConfigured, throwIfError } from "@/lib/supabase"
 
 export type StudentRecord = {
   studentId: string
@@ -25,6 +26,8 @@ type StudentRow = {
   created_at: string
 }
 
+const FILE = "students.json"
+
 function mapStudent(row: StudentRow): StudentRecord {
   return {
     studentId: row.student_id,
@@ -39,7 +42,27 @@ function mapStudent(row: StudentRow): StudentRecord {
   }
 }
 
+function normalize(student: StudentRecord): StudentRecord {
+  return {
+    ...student,
+    pointsBalance: student.pointsBalance ?? 0,
+  }
+}
+
+async function readAllLocal(): Promise<StudentRecord[]> {
+  const parsed = await readJsonFile<StudentRecord[]>(FILE, [])
+  return Array.isArray(parsed) ? parsed.map(normalize) : []
+}
+
+async function writeAllLocal(students: StudentRecord[]) {
+  await writeJsonFile(FILE, students)
+}
+
 export async function listStudents() {
+  if (!isSupabaseConfigured()) {
+    return readAllLocal()
+  }
+
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from("students")
@@ -65,6 +88,10 @@ export async function searchStudents(query: string) {
 }
 
 export async function getStudentCount() {
+  if (!isSupabaseConfigured()) {
+    return (await readAllLocal()).length
+  }
+
   const supabase = createServiceClient()
   const { count, error } = await supabase
     .from("students")
@@ -74,6 +101,11 @@ export async function getStudentCount() {
 }
 
 export async function getStudentById(studentId: string) {
+  if (!isSupabaseConfigured()) {
+    const students = await readAllLocal()
+    return students.find((student) => student.studentId === studentId) ?? null
+  }
+
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from("students")
@@ -87,6 +119,43 @@ export async function getStudentById(studentId: string) {
 export async function upsertStudents(
   incoming: Omit<StudentRecord, "passwordHash" | "createdAt" | "pointsBalance">[]
 ) {
+  if (!isSupabaseConfigured()) {
+    return withLock(async () => {
+      const current = await readAllLocal()
+      const byId = new Map(current.map((student) => [student.studentId, student]))
+      const now = new Date().toISOString()
+      let created = 0
+      let updated = 0
+
+      for (const row of incoming) {
+        const existing = byId.get(row.studentId)
+
+        if (existing) {
+          byId.set(row.studentId, {
+            ...existing,
+            name: row.name,
+            grade: row.grade,
+            classNumber: row.classNumber,
+            studentNumber: row.studentNumber,
+            role: row.role,
+          })
+          updated += 1
+        } else {
+          byId.set(row.studentId, {
+            ...row,
+            passwordHash: null,
+            pointsBalance: 0,
+            createdAt: now,
+          })
+          created += 1
+        }
+      }
+
+      await writeAllLocal([...byId.values()])
+      return { created, updated, total: byId.size }
+    })
+  }
+
   const supabase = createServiceClient()
   const { data: existingRows, error: existingError } = await supabase
     .from("students")
@@ -145,6 +214,21 @@ export async function setStudentPassword(
   studentId: string,
   passwordHash: string
 ) {
+  if (!isSupabaseConfigured()) {
+    return withLock(async () => {
+      const students = await readAllLocal()
+      const index = students.findIndex((student) => student.studentId === studentId)
+
+      if (index === -1) {
+        return false
+      }
+
+      students[index] = { ...students[index], passwordHash }
+      await writeAllLocal(students)
+      return true
+    })
+  }
+
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from("students")
@@ -154,4 +238,33 @@ export async function setStudentPassword(
     .maybeSingle()
   throwIfError(error)
   return Boolean(data)
+}
+
+export async function addPointsToStudents(
+  studentIds: string[],
+  amount: number
+) {
+  return withLock(async () => {
+    const students = await readAllLocal()
+    const uniqueIds = [...new Set(studentIds)]
+    const found: string[] = []
+    const missing: string[] = []
+
+    for (const studentId of uniqueIds) {
+      const index = students.findIndex((student) => student.studentId === studentId)
+      if (index === -1) {
+        missing.push(studentId)
+        continue
+      }
+
+      students[index] = {
+        ...students[index],
+        pointsBalance: students[index].pointsBalance + amount,
+      }
+      found.push(studentId)
+    }
+
+    await writeAllLocal(students)
+    return { found, missing }
+  })
 }
