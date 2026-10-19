@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Noto_Sans_KR } from "next/font/google"
 
 import "./globals.css"
@@ -15,6 +15,12 @@ const description =
 
 export const dynamic = "force-dynamic"
 
+const themeColor = "#FEF9F1"
+
+export const viewport: Viewport = {
+  themeColor,
+}
+
 export const metadata: Metadata = {
   title: {
     default: siteName,
@@ -22,6 +28,10 @@ export const metadata: Metadata = {
   },
   description,
   applicationName: siteName,
+  icons: {
+    icon: [{ url: "/icons/icon-32.png", sizes: "32x32", type: "image/png" }],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   robots: {
     index: false,
     follow: false,
