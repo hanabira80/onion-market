@@ -1,4 +1,5 @@
-import { createServiceClient, throwIfError } from "@/lib/supabase"
+import { readJsonFile, withLock, writeJsonFile } from "@/lib/json-store"
+import { createServiceClient, isSupabaseConfigured, throwIfError } from "@/lib/supabase"
 
 export type WishlistItem = {
   studentId: string
@@ -12,6 +13,8 @@ type WishlistRow = {
   created_at: string
 }
 
+const FILE = "wishlist.json"
+
 function mapItem(row: WishlistRow): WishlistItem {
   return {
     studentId: row.student_id,
@@ -20,7 +23,19 @@ function mapItem(row: WishlistRow): WishlistItem {
   }
 }
 
+async function readAllLocal(): Promise<WishlistItem[]> {
+  const parsed = await readJsonFile<WishlistItem[]>(FILE, [])
+  return Array.isArray(parsed) ? parsed : []
+}
+
 export async function listWishlistByStudent(studentId: string) {
+  if (!isSupabaseConfigured()) {
+    const items = await readAllLocal()
+    return items
+      .filter((item) => item.studentId === studentId)
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  }
+
   const supabase = createServiceClient()
   const { data, error } = await supabase
     .from("wishlist")
@@ -37,6 +52,29 @@ export async function listWishedProductIds(studentId: string) {
 }
 
 export async function toggleWishlist(studentId: string, productId: string) {
+  if (!isSupabaseConfigured()) {
+    return withLock(async () => {
+      const items = await readAllLocal()
+      const index = items.findIndex(
+        (item) => item.studentId === studentId && item.productId === productId
+      )
+
+      if (index >= 0) {
+        items.splice(index, 1)
+        await writeJsonFile(FILE, items)
+        return { wished: false }
+      }
+
+      items.push({
+        studentId,
+        productId,
+        createdAt: new Date().toISOString(),
+      })
+      await writeJsonFile(FILE, items)
+      return { wished: true }
+    })
+  }
+
   const supabase = createServiceClient()
   const { data: existing, error: readError } = await supabase
     .from("wishlist")

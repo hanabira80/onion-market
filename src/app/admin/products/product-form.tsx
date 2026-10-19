@@ -25,6 +25,7 @@ import {
   SALE_STATUS_LABEL,
   SALE_STATUSES,
 } from "@/lib/catalog"
+import { compressProductImage, ImageTooLargeError } from "@/lib/compress-image"
 import type { ProductRecord } from "@/lib/products"
 
 const selectClassName =
@@ -35,9 +36,29 @@ type ProductFormProps = {
 }
 
 export function ProductForm({ product }: ProductFormProps) {
-  const action = product ? updateProductAction : createProductAction
+  const serverAction = product ? updateProductAction : createProductAction
+
+  async function saveWithCompressedImage(
+    prev: ProductActionState,
+    formData: FormData
+  ): Promise<ProductActionState> {
+    const file = formData.get("image")
+    if (file instanceof File && file.size > 0) {
+      try {
+        formData.set("image", await compressProductImage(file))
+      } catch (error) {
+        if (error instanceof ImageTooLargeError) {
+          return { error: "사진이 너무 커요. 12MB 이하로 골라 주세요." }
+        }
+        return { error: "사진을 가볍게 바꾸지 못했어요. 다른 파일을 골라 주세요." }
+      }
+    }
+
+    return serverAction(prev, formData)
+  }
+
   const [state, formAction, pending] = useActionState<ProductActionState, FormData>(
-    action,
+    saveWithCompressedImage,
     undefined
   )
 
@@ -74,7 +95,8 @@ export function ProductForm({ product }: ProductFormProps) {
             required={!product}
           />
           <FieldDescription>
-            1장만. JPG·PNG·WEBP, 2MB 이하. 수정 시 비워 두면 기존 사진을 유지해요.
+            1장만. JPG·PNG·WEBP. 큰 사진은 자동으로 가볍게 바꿔 올려요. 수정 시 비워 두면
+            기존 사진을 유지해요.
           </FieldDescription>
         </Field>
         <Field>
@@ -159,7 +181,7 @@ export function ProductForm({ product }: ProductFormProps) {
       </FieldGroup>
       <div className="flex flex-wrap gap-2">
         <Button type="submit" className="h-11" disabled={pending}>
-          {pending ? "저장 중…" : product ? "수정 저장" : "상품 올리기"}
+          {pending ? "사진 줄이고 저장 중…" : product ? "수정 저장" : "상품 올리기"}
         </Button>
         {product ? (
           <Button
