@@ -12,7 +12,7 @@ const hop = {
   ease: ["easeOut", "easeIn"] as ["easeOut", "easeIn"],
 }
 
-export function ComingSoon() {
+export function ComingSoon({ children }: { children?: React.ReactNode }) {
   const [dotLottie, setDotLottie] = useState<DotLottie | null>(null)
   const [active, setActive] = useState(0)
 
@@ -63,6 +63,7 @@ export function ComingSoon() {
           </motion.span>
         ))}
       </h1>
+      {children}
     </main>
   )
 }

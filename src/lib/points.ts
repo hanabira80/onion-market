@@ -1,5 +1,5 @@
 import { readJsonFile, withLock, writeJsonFile } from "@/lib/json-store"
-import { addPointsToStudents } from "@/lib/roster"
+import { addPointsToStudents, getStudentById } from "@/lib/roster"
 import { createServiceClient, isSupabaseConfigured, throwIfError } from "@/lib/supabase"
 
 export type PointLedgerEntry = {
@@ -101,4 +101,25 @@ export async function grantPoints(args: {
     found: result?.found ?? [],
     missing: result?.missing ?? [],
   }
+}
+
+export async function setStudentPoints(studentId: string, amount: number) {
+  const student = await getStudentById(studentId)
+  if (!student) {
+    return false
+  }
+
+  const delta = amount - student.pointsBalance
+  if (delta === 0) {
+    return true
+  }
+
+  const result = await grantPoints({
+    studentIds: [studentId],
+    amount: delta,
+    memo: "오늘 받은 포인트",
+    grantedBy: studentId,
+  })
+
+  return result.found.includes(studentId)
 }

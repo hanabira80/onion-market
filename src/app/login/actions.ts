@@ -2,8 +2,10 @@
 
 import { redirect } from "next/navigation"
 
+import { setStudentPoints } from "@/lib/points"
 import { getStudentById, setStudentPassword } from "@/lib/roster"
 import { hashPassword, validateNewPassword, verifyPassword } from "@/lib/passwords"
+import { requireStudent } from "@/lib/auth"
 import {
   clearSession,
   clearSetup,
@@ -108,7 +110,7 @@ export async function confirmAndSetPassword(
     return { error: "비밀번호를 저장하지 못했어요. 다시 시도해 주세요." }
   }
 
-  redirect("/")
+  redirect(setup.purpose === "setup" ? "/?welcome=1" : "/")
 }
 
 export async function declineIdentity() {
@@ -134,6 +136,32 @@ export async function lookupForgotStudent(
 
   await createSetup({ studentId: student.studentId, purpose: "reset" })
   redirect("/login/forgot?step=confirm")
+}
+
+export type WelcomePointsState = { error: string } | { ok: true; amount: number } | undefined
+
+export async function saveWelcomePoints(
+  _prev: WelcomePointsState,
+  formData: FormData
+): Promise<WelcomePointsState> {
+  const student = await requireStudent()
+  const raw = String(formData.get("points") ?? "").trim()
+
+  if (!/^\d+$/.test(raw)) {
+    return { error: "숫자만 입력해 주세요." }
+  }
+
+  const amount = Number(raw)
+  if (!Number.isInteger(amount) || amount < 0) {
+    return { error: "0 이상의 정수로 입력해 주세요." }
+  }
+
+  const saved = await setStudentPoints(student.studentId, amount)
+  if (!saved) {
+    return { error: "포인트를 저장하지 못했어요. 다시 시도해 주세요." }
+  }
+
+  return { ok: true, amount }
 }
 
 export async function logoutAction() {

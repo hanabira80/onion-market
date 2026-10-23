@@ -2,6 +2,7 @@
 
 import { useActionState } from "react"
 import Link from "next/link"
+import { motion } from "framer-motion"
 
 import { lookupStudentId, loginWithPassword, type ActionState } from "@/app/login/actions"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -16,6 +17,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { STUDENT_ID_HINT } from "@/lib/student-id"
 
+const item = {
+  hidden: { opacity: 0, y: 6 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.2 } },
+}
+
 type LoginFormProps = {
   step: "id" | "password"
   teacherMessage?: string | null
@@ -29,7 +35,14 @@ export function LoginForm({ step, teacherMessage }: LoginFormProps) {
   )
 
   return (
-    <form action={formAction} className="grid gap-5">
+    <motion.form
+      action={formAction}
+      className="grid gap-5"
+      initial="hidden"
+      animate="show"
+      variants={{ show: { transition: { staggerChildren: 0.04 } } }}
+    >
+      <motion.div variants={item}>
       <FieldGroup>
         {step === "id" ? (
           <Field>
@@ -61,17 +74,20 @@ export function LoginForm({ step, teacherMessage }: LoginFormProps) {
         )}
         {state?.error ? <FieldError>{state.error}</FieldError> : null}
       </FieldGroup>
+      </motion.div>
+      <motion.div variants={item}>
       <Button type="submit" className="h-11 w-full" disabled={pending}>
         {pending ? "확인 중…" : step === "password" ? "로그인" : "다음"}
       </Button>
-      <p className="text-center text-sm text-muted-foreground">
+      </motion.div>
+      <motion.p variants={item} className="text-center text-sm text-muted-foreground">
         비밀번호를 잊었나요?{" "}
         <Link href="/login/forgot" className="text-foreground underline-offset-4 hover:underline">
           다시 정하기
         </Link>
-      </p>
+      </motion.p>
       {step === "id" ? (
-        <div className="grid gap-3 border-t pt-5">
+        <motion.div variants={item} className="grid gap-3 border-t border-white/50 pt-5">
           {teacherMessage ? <p className="text-center text-sm text-destructive">{teacherMessage}</p> : null}
           <Link
             href="/auth/google"
@@ -80,8 +96,8 @@ export function LoginForm({ step, teacherMessage }: LoginFormProps) {
             선생님 로그인
           </Link>
           <p className="text-center text-xs text-muted-foreground">구글 계정으로 들어와요.</p>
-        </div>
+        </motion.div>
       ) : null}
-    </form>
+    </motion.form>
   )
 }

@@ -14,7 +14,7 @@ export default async function AdminLayout({
   const student = await getCurrentStudent()
 
   if (count > 0 && !student) {
-    redirect("/login")
+    redirect("/logout")
   }
 
   if (count > 0 && student?.role !== "admin") {
