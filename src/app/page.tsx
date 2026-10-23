@@ -8,6 +8,7 @@ import { compareShopProducts, isCategory } from "@/lib/catalog"
 import { listProducts } from "@/lib/products"
 import { getStudentById } from "@/lib/roster"
 import { listWishedProductIds } from "@/lib/wishlist"
+import { WelcomeCover } from "@/components/auth/welcome-cover"
 
 export const metadata: Metadata = {
   title: "몰",
@@ -17,10 +18,10 @@ export const metadata: Metadata = {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string }>
+  searchParams: Promise<{ category?: string; welcome?: string }>
 }) {
   const student = await requireStudent()
-  const [{ category: categoryParam }, products, wishedIds, record] = await Promise.all([
+  const [{ category: categoryParam, welcome }, products, wishedIds, record] = await Promise.all([
     searchParams,
     listProducts(),
     listWishedProductIds(student.studentId),
@@ -34,6 +35,7 @@ export default async function HomePage({
   return (
     <>
       <SiteHeader student={student} points={record?.pointsBalance ?? 0} />
+      {welcome === "1" ? <WelcomeCover /> : null}
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-10">
         <p className="text-sm text-muted-foreground">
           {student.name} · {student.studentId}

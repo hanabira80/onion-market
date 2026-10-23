@@ -49,7 +49,7 @@ export async function requireStudent(): Promise<StudentSession> {
   }
 
   if (!student) {
-    redirect("/login")
+    redirect("/logout")
   }
 
   return student
@@ -69,7 +69,7 @@ export async function requireAdmin() {
   }
 
   if (!actor) {
-    redirect("/login")
+    redirect("/logout")
   }
 
   if (actor.role !== "admin") {
@@ -83,7 +83,7 @@ export async function requireMaster() {
   const actor = await getCurrentStudent()
 
   if (!actor) {
-    redirect("/login")
+    redirect("/logout")
   }
 
   if (actor.kind !== "teacher" || actor.adminLevel !== "master") {
