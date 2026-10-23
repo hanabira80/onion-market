@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server"
 
 import { SESSION_COOKIE, readSessionFromToken } from "@/lib/session"
 
-const PUBLIC_PREFIXES = ["/login", "/logout", "/auth"]
+const PUBLIC_PREFIXES = ["/login", "/logout", "/auth", "/welcome"]
 
 function isPublicPath(pathname: string) {
   return PUBLIC_PREFIXES.some(
@@ -16,6 +16,12 @@ export async function proxy(request: NextRequest) {
   const session = await readSessionFromToken(
     request.cookies.get(SESSION_COOKIE)?.value
   )
+
+  if (!session && pathname === "/") {
+    const url = request.nextUrl.clone()
+    url.pathname = "/welcome"
+    return NextResponse.rewrite(url)
+  }
 
   if (session && isPublicPath(pathname) && pathname !== "/logout") {
     return NextResponse.redirect(new URL("/", request.url))

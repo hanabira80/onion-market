@@ -32,20 +32,27 @@ export default async function LoginPage({
   }
 
   return (
-    <AuthShell
-      title={showPassword ? "비밀번호 입력" : "학번 로그인"}
-      description={
-        count === 0
-          ? "아직 명단이 없어요. 아래 링크로 CSV를 먼저 올려 주세요."
-          : showPassword
-            ? "비밀번호를 입력하면 몰로 들어가요."
-            : "명단에 있는 학번만 들어올 수 있어요."
-      }
-    >
-      <LoginForm
-        step={showPassword ? "password" : "id"}
-        teacherMessage={teacher ? TEACHER_MESSAGES[teacher] : null}
+    <>
+      <iframe
+        src="/welcome"
+        title="わくわく祭り"
+        className="fixed inset-0 z-[9999] block h-dvh w-full border-0 bg-[#FFFDF7]"
       />
-    </AuthShell>
+      <AuthShell
+        title={showPassword ? "비밀번호 입력" : "학번 로그인"}
+        description={
+          count === 0
+            ? "아직 명단이 없어요. 아래 링크로 CSV를 먼저 올려 주세요."
+            : showPassword
+              ? "비밀번호를 입력하면 몰로 들어가요."
+              : "명단에 있는 학번만 들어올 수 있어요."
+        }
+      >
+        <LoginForm
+          step={showPassword ? "password" : "id"}
+          teacherMessage={teacher ? TEACHER_MESSAGES[teacher] : null}
+        />
+      </AuthShell>
+    </>
   )
 }

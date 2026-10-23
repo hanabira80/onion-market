@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>わくわく祭り | 장훈제 2-1반 일본어탐구반</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Japanese Traditional Brush/Serif & Cute Korean Storybook Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&family=Noto+Serif+JP:wght@700;900&family=Yuji+Syuku&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #4A3B32;
+      --paper: #FFFDF7;
+      --accent-red: #E04F44;
+      --accent-gold: #F6C343;
+      --chiikawa-pink: #FFD6E0;
+      --hachi-blue: #C8E7FF;
+      --usagi-yellow: #FFF0B8;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: 'Gaegu', cursive, sans-serif;
+    }
+
+    /* Storybook paper grain background */
+    .storybook-bg {
+      background-color: #FFFDF7;
+      background-image: 
+        radial-gradient(#E8DEC8 1.2px, transparent 1.2px), 
+        radial-gradient(#F3ECE0 1.2px, #FFFDF7 1.2px);
+      background-size: 28px 28px;
+      background-position: 0 0, 14px 14px;
+    }
+
+    .font-jp-sign {
+      font-family: 'Yuji Syuku', 'Noto Serif JP', serif;
+    }
+
+    .font-title {
+      font-family: 'Jua', sans-serif;
+    }
+
+    /* Hand-drawn comic border aesthetic */
+    .comic-box {
+      border: 3px solid var(--ink);
+      border-radius: 22px;
+      box-shadow: 0 5px 0 var(--ink);
+    }
+
+    .comic-box-sm {
+      border: 2.5px solid var(--ink);
+      border-radius: 14px;
+      box-shadow: 0 3px 0 var(--ink);
+    }
+
+    .signboard-wood {
+      background: linear-gradient(180deg, #FFF7E2 0%, #F4DFB6 100%);
+      border: 3.5px solid #4A3B32;
+      box-shadow: 0 5px 0 #4A3B32, inset 0 0 0 3px #D8B884;
+      border-radius: 14px;
+    }
+
+    /* Main 700vw Slider Track */
+    #slider-track {
+      display: flex;
+      width: 700vw;
+      height: 100dvh;
+      transition: transform 0.58s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+      position: relative;
+    }
+
+    .slide-page {
+      width: 100vw;
+      height: 100dvh;
+      flex-shrink: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    /* Animations */
+    @keyframes lanternSway {
+      0%, 100% { transform: rotate(-4deg); }
+      50% { transform: rotate(4deg); }
+    }
+    .lantern-sway {
+      transform-origin: top center;
+      animation: lanternSway 3.2s ease-in-out infinite;
+    }
+    .lantern-sway-delayed {
+      transform-origin: top center;
+      animation: lanternSway 3.6s ease-in-out 1.2s infinite;
+    }
+
+    @keyframes charBounce {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-6px) scale(1.02); }
+    }
+    .char-bounce {
+      animation: charBounce 2.2s ease-in-out infinite;
+    }
+
+    @keyframes charWiggle {
+      0%, 100% { transform: rotate(-2.5deg) translateY(0); }
+      50% { transform: rotate(2.5deg) translateY(-4px); }
+    }
+    .char-wiggle {
+      animation: charWiggle 1.8s ease-in-out infinite;
+    }
+
+    @keyframes steamRise {
+      0% { transform: translateY(4px) scale(0.9); opacity: 0; }
+      50% { opacity: 0.75; }
+      100% { transform: translateY(-16px) scale(1.15); opacity: 0; }
+    }
+    .steam-anim {
+      animation: steamRise 2.4s ease-out infinite;
+    }
+
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+    .blink-arrow {
+      animation: cursorBlink 1s infinite;
+    }
+
+    /* Speech bubble tail pointing up to the booth character */
+    .speech-tail-top {
+      position: relative;
+    }
+    .speech-tail-top::before {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 0 13px 14px 13px;
+      border-style: solid;
+      border-color: transparent transparent var(--ink) transparent;
+    }
+    .speech-tail-top::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 0 10px 11px 10px;
+      border-style: solid;
+      border-color: transparent transparent #FFFFFF transparent;
+    }
+
+    /* Hide scrollbar for top nav pills */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="storybook-bg">
+
+  <!-- ================= TOP NAVIGATION BAR ================= -->
+  <header class="fixed top-0 left-0 w-full z-40 px-2 pt-2 pb-1 pointer-events-none">
+    <div class="max-w-md mx-auto flex flex-col gap-1 pointer-events-auto">
+      <div class="flex items-center justify-center gap-1.5 bg-[#FFF9EA]/95 backdrop-blur-sm border-2 border-[#4A3B32] rounded-full px-2.5 py-1 shadow-[0_3px_0_#4A3B32]">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#E04F44] border border-[#4A3B32]"></span>
+        <span class="font-title text-sm text-[#4A3B32] tracking-tight">와쿠와쿠 마쯔리 <span class="text-[#E04F44]">2-1</span></span>
+      </div>
+      <!-- Quick Jump Dots/Tabs -->
+      <nav id="top-nav-dots" class="flex items-center justify-center gap-1 overflow-x-auto no-scrollbar bg-[#FFF9EA]/95 backdrop-blur-sm border-2 border-[#4A3B32] rounded-full px-2.5 py-1 shadow-[0_3px_0_#4A3B32]">
+        <button onclick="goToSlide(0)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">기부</button>
+        <button onclick="goToSlide(1)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">입구</button>
+        <button onclick="goToSlide(2)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">신사</button>
+        <button onclick="goToSlide(3)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">라면</button>
+        <button onclick="goToSlide(4)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">굿즈</button>
+        <button onclick="goToSlide(5)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">서예</button>
+        <button onclick="goToSlide(6)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">켄다마</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ================= FLOATING SAKURA / LANTERN PARTICLES ================= -->
+  <div id="petal-container" class="fixed inset-0 pointer-events-none z-20 overflow-hidden"></div>
+
+  <!-- ================= MAIN 7-SLIDE HORIZONTAL TRACK ================= -->
+  <main id="slider-track">
+
+    <!-- 
+      CONTINUOUS WINDING COUNTRY PATH OVERLAY (Spans all 700vw seamlessly!)
+      Placed across the middle of all 7 pages (approx 51% to 63% vertical height)
+    -->
+    <div class="absolute left-0 top-[49.5%] w-[700vw] h-[13.5dvh] z-10 pointer-events-none">
+      <svg viewBox="0 0 7000 160" preserveAspectRatio="none" class="w-full h-full overflow-visible">
+        <defs>
+          <!-- Warm Country Dirt Road Gradient -->
+          <linearGradient id="roadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F3DFC1" />
+            <stop offset="50%" stop-color="#E7C89E" />
+            <stop offset="100%" stop-color="#D7B282" />
+          </linearGradient>
+          <!-- Soft Grass Border Pattern -->
+          <filter id="wobbleFilter" x="-2%" y="-10%" width="104%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" />
+          </filter>
+        </defs>
+
+        <!-- Grassy Meadow Shadow Under Road -->
+        <path d="M 0,85 
+                 C 320,30 680,135 1000,85 
+                 C 1320,35 1680,130 2000,85 
+                 C 2350,40 2650,135 3000,85 
+                 C 3340,35 3660,135 4000,85 
+                 C 4330,35 4670,130 5000,85 
+                 C 5350,35 5650,135 6000,85 
+                 C 6340,35 6680,125 7000,85"
+              fill="none" stroke="#C5DF9B" stroke-width="112" stroke-linecap="round" />
+
+        <!-- Outer Dark Brown Comic Border of the Winding Road -->
+        <path d="M 0,85 
+                 C 320,30 680,135 1000,85 
+                 C 1320,35 1680,130 2000,85 
+                 C 2350,40 2650,135 3000,85 
+                 C 3340,35 3660,135 4000,85 
+                 C 4330,35 4670,130 5000,85 
+                 C 5350,35 5650,135 6000,85 
+                 C 6340,35 6680,125 7000,85"
+              fill="none" stroke="#4A3B32" stroke-width="84" stroke-linecap="round" />
+
+        <!-- Inner Sandy Country Road Fill -->
+        <path d="M 0,85 
+                 C 320,30 680,135 1000,85 
+                 C 1320,35 1680,130 2000,85 
+                 C 2350,40 2650,135 3000,85 
+                 C 3340,35 3660,135 4000,85 
+                 C 4330,35 4670,130 5000,85 
+                 C 5350,35 5650,135 6000,85 
+                 C 6340,35 6680,125 7000,85"
+              fill="none" stroke="url(#roadGrad)" stroke-width="74" stroke-linecap="round" />
+
+        <!-- Cute Stepping Stones & Country Footpath Dashes along the entire 7000px road -->
+        <path d="M 0,85 
+                 C 320,30 680,135 1000,85 
+                 C 1320,35 1680,130 2000,85 
+                 C 2350,40 2650,135 3000,85 
+                 C 3340,35 3660,135 4000,85 
+                 C 4330,35 4670,130 5000,85 
+                 C 5350,35 5650,135 6000,85 
+                 C 6340,35 6680,125 7000,85"
+              fill="none" stroke="#BA9668" stroke-width="6" stroke-dasharray="18 28" stroke-linecap="round" opacity="0.65" />
+
+        <!-- Decorative Little Grass Tufts, Flowers & Pebbles along all 7 slides -->
+        <g fill="#7CB342" stroke="#4A3B32" stroke-width="2.5">
+          <circle cx="220" cy="28" r="7" fill="#FFB7C5"/>
+          <circle cx="780" cy="142" r="6" fill="#FFE082"/>
+          <circle cx="1250" cy="30" r="7" fill="#FFB7C5"/>
+          <circle cx="1760" cy="140" r="6" fill="#FFF59D"/>
+          <circle cx="2260" cy="34" r="7" fill="#FFB7C5"/>
+          <circle cx="2820" cy="142" r="6" fill="#FFE082"/>
+          <circle cx="3260" cy="32" r="7" fill="#FFB7C5"/>
+          <circle cx="3780" cy="142" r="6" fill="#FFE082"/>
+          <circle cx="4260" cy="32" r="7" fill="#FFB7C5"/>
+          <circle cx="4780" cy="140" r="6" fill="#FFE082"/>
+          <circle cx="5260" cy="32" r="7" fill="#FFB7C5"/>
+          <circle cx="5780" cy="142" r="6" fill="#FFE082"/>
+          <circle cx="6260" cy="32" r="7" fill="#FFB7C5"/>
+          <circle cx="6780" cy="138" r="6" fill="#FFE082"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- =======================================================================
+         PAGE 1: 사전 기부 안내 (하치와레 & 치이카와 + 1.6초 타자기 말풍선)
+    ======================================================================== -->
+    <section class="slide-page pt-20 pb-3 px-3">
+      <!-- TOP BOOTH & SIGNBOARD AREA (Above Road) -->
+      <div class="relative w-full max-w-md mx-auto h-[44dvh] flex flex-col items-center justify-end z-20">
+        <!-- Hanging Festival Bunting -->
+        <div class="w-full flex justify-between items-start px-2 -mb-2 pointer-events-none">
+          <div class="lantern-sway bg-[#E04F44] text-white border-2 border-[#4A3B32] rounded-full w-9 h-11 flex items-center justify-center font-jp-sign text-xs shadow-[0_2px_0_#4A3B32]">祭</div>
+          <div class="px-3 py-0.5 bg-[#FFE082] border-2 border-[#4A3B32] rounded-full text-xs font-bold text-[#4A3B32] shadow-sm">
+            📌 10월 28일까지 · 점심시간 진로상담실
+          </div>
+          <div class="lantern-sway-delayed bg-[#FFF5E4] text-[#E04F44] border-2 border-[#4A3B32] rounded-full w-9 h-11 flex items-center justify-center font-jp-sign text-xs shadow-[0_2px_0_#4A3B32]">福</div>
+        </div>
+
+        <!-- Wooden Booth Structure -->
+        <div class="relative w-full max-w-[350px] flex flex-col items-center">
+          <!-- Roof -->
+          <div class="w-[96%] h-7 bg-[#E04F44] border-[3px] border-[#4A3B32] rounded-t-2xl flex overflow-hidden shadow-sm">
+            <div class="flex-1 bg-[#E04F44] border-r-2 border-[#4A3B32]"></div>
+            <div class="flex-1 bg-[#FFFDF7] border-r-2 border-[#4A3B32]"></div>
+            <div class="flex-1 bg-[#E04F44] border-r-2 border-[#4A3B32]"></div>
+            <div class="flex-1 bg-[#FFFDF7] border-r-2 border-[#4A3B32]"></div>
+            <div class="flex-1 bg-[#E04F44] border-r-2 border-[#4A3B32]"></div>
+            <div class="flex-1 bg-[#FFFDF7]"></div>
+          </div>
+
+          <!-- Signboard (Japanese -> Korean Pronunciation -> Meaning) -->
+          <div class="signboard-wood px-5 py-1.5 -mt-2 z-20 text-center min-w-[230px]">
+            <div class="font-jp-sign text-2xl sm:text-3xl font-black text-[#3B2B20] leading-none tracking-wider">事前寄付案内</div>
+            <div class="text-xs font-bold text-[#9C4138] mt-0.5 tracking-tight">[ 사 전 기 부 안 내 ]</div>
+            <div class="text-[11px] font-bold text-[#5C4938] bg-[#FFFDF7]/80 px-2 py-0.2 rounded-full inline-block mt-0.5 border border-[#4A3B32]/30">굿즈 기부 & 포인트 적립소</div>
+          </div>
+
+          <!-- Booth Interior with Hachiware & Chiikawa -->
+          <div class="w-[90%] bg-[#FFF8E7] border-x-[3px] border-b-[3px] border-[#4A3B32] rounded-b-xl px-3 pt-2 pb-1 flex items-end justify-around relative shadow-[0_4px_0_#4A3B32]">
+            <!-- Wooden Pillars -->
+            <div class="absolute left-2 top-0 bottom-0 w-2 bg-[#C88A52] border-r-2 border-[#4A3B32]"></div>
+            <div class="absolute right-2 top-0 bottom-0 w-2 bg-[#C88A52] border-l-2 border-[#4A3B32]"></div>
+
+            <!-- Hachiware SVG (Speaking enthusiastically) -->
+            <div class="char-bounce flex flex-col items-center z-10">
+              <svg width="96" height="90" viewBox="0 0 110 100">
+                <!-- Ears -->
+                <polygon points="22,36 16,10 42,24" fill="#6CA6CD" stroke="#4A3B32" stroke-width="3.5" stroke-linejoin="round"/>
+                <polygon points="88,36 94,10 68,24" fill="#6CA6CD" stroke="#4A3B32" stroke-width="3.5" stroke-linejoin="round"/>
+                <!-- Head & Body -->
+                <path d="M 22,55 C 18,24 92,24 88,55 C 92,76 86,92 72,94 L 38,94 C 24,92 18,76 22,55 Z" fill="#FFFFFF" stroke="#4A3B32" stroke-width="3.5"/>
+                <!-- Blue Hachiware bangs -->
+                <path d="M 23,43 C 32,25 48,30 55,44 C 62,30 78,25 87,43 C 83,26 67,22 55,23 C 43,22 27,26 23,43 Z" fill="#6CA6CD" stroke="#4A3B32" stroke-width="3"/>
+                <!-- Matsuri Headband (Hachimaki) -->
+                <path d="M 24,35 Q 55,29 86,35" fill="none" stroke="#E04F44" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="30" cy="34" r="4" fill="#FFF" stroke="#4A3B32" stroke-width="2"/>
+                <!-- Face -->
+                <circle cx="41" cy="54" r="4.2" fill="#4A3B32"/>
+                <circle cx="69" cy="54" r="4.2" fill="#4A3B32"/>
+                <circle cx="39.5" cy="52.5" r="1.5" fill="#FFF"/>
+                <circle cx="67.5" cy="52.5" r="1.5" fill="#FFF"/>
+                <!-- Blushes -->
+                <ellipse cx="31" cy="60" rx="5.5" ry="3" fill="#FFA8B8" opacity="0.75"/>
+                <ellipse cx="79" cy="60" rx="5.5" ry="3" fill="#FFA8B8" opacity="0.75"/>
+                <!-- Cat Smile + Fang -->
+                <path d="M 48,59 Q 51.5,63 55,59 Q 58.5,63 62,59" fill="none" stroke="#4A3B32" stroke-width="2.8" stroke-linecap="round"/>
+                <polygon points="57,60 59,65 61,60" fill="#FFF" stroke="#4A3B32" stroke-width="1.5"/>
+                <!-- Raised Arm Waving -->
+                <path d="M 20,66 Q 7,54 15,46" fill="#FFFFFF" stroke="#4A3B32" stroke-width="3.5" stroke-linecap="round"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#C8E7FF] px-2 rounded-full border border-[#4A3B32] -mt-2">하치와레</span>
+            </div>
+
+            <!-- Donation Box & Gacha Capsule in Middle -->
+            <div class="flex flex-col items-center z-10 mb-1">
+              <div class="w-16 h-12 bg-[#F6C343] border-2 border-[#4A3B32] rounded-lg flex flex-col items-center justify-center shadow-sm">
+                <span class="text-[10px] font-bold text-[#4A3B32] leading-tight">굿즈 기부함</span>
+                <span class="text-xs font-black text-[#E04F44]">+POINT!</span>
+              </div>
+            </div>
+
+            <!-- Chiikawa SVG holding a plushie/capsule -->
+            <div class="char-wiggle flex flex-col items-center z-10">
+              <svg width="90" height="86" viewBox="0 0 110 100">
+                <!-- Round Bear Ears -->
+                <circle cx="28" cy="24" r="11" fill="#FFFFFF" stroke="#4A3B32" stroke-width="3.5"/>
+                <circle cx="82" cy="24" r="11" fill="#FFFFFF" stroke="#4A3B32" stroke-width="3.5"/>
+                <!-- Body -->
+                <path d="M 22,55 C 18,25 92,25 88,55 C 92,76 86,92 72,94 L 38,94 C 24,92 18,76 22,55 Z" fill="#FFFFFF" stroke="#4A3B32" stroke-width="3.5"/>
+                <!-- Eyes -->
+                <circle cx="42" cy="54" r="4.2" fill="#4A3B32"/>
+                <circle cx="68" cy="54" r="4.2" fill="#4A3B32"/>
+                <circle cx="40.5" cy="52.5" r="1.5" fill="#FFF"/>
+                <circle cx="66.5" cy="52.5" r="1.5" fill="#FFF"/>
+                <!-- Pink Cheeks -->
+                <ellipse cx="32" cy="60" rx="6" ry="3.2" fill="#FF9EB5" opacity="0.8"/>
+                <ellipse cx="78" cy="60" rx="6" ry="3.2" fill="#FF9EB5" opacity="0.8"/>
+                <!-- Cute mouth -->
+                <path d="M 50,59 Q 55,63 60,59" fill="none" stroke="#4A3B32" stroke-width="2.8" stroke-linecap="round"/>
+                <!-- Holding Gacha Ball -->
+                <circle cx="55" cy="77" r="10" fill="#FF7BAC" stroke="#4A3B32" stroke-width="2.8"/>
+                <path d="M 45,77 L 65,77" stroke="#4A3B32" stroke-width="2.5"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#FFD6E0] px-2 rounded-full border border-[#4A3B32] -mt-2">치이카와</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE ROAD SPACE (12dvh reserved for the continuous SVG road + road sign hint) -->
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+        <span class="bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">🐾 마쯔리 마을 입구길</span>
+        <button onclick="nextSlide()" class="pointer-events-auto bg-[#E04F44] text-white border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32] active:translate-y-0.5">
+          토리이 입구로 ➔
+        </button>
+      </div>
+
+      <!-- BOTTOM SECTION: DYNAMIC SPEECH BUBBLE WITH 1.6s TYPEWRITER -->
+      <div class="relative w-full max-w-md mx-auto h-[37dvh] flex flex-col justify-start items-center z-20 pt-1">
+        <div class="text-xs font-bold text-[#7A5C43] mb-1.5 flex items-center gap-1.5">
+          <span class="inline-block w-2 h-2 rounded-full bg-[#E04F44] animate-ping"></span>
+          말풍선을 터치하면 다음 이야기로 넘어가요!
+        </div>
+
+        <!-- Dynamic Speech Bubble (Resizes smoothly to fit text!) -->
+        <div id="p1-bubble" onclick="advancePage1Dialogue()" 
+             class="speech-tail-top comic-box bg-white cursor-pointer px-5 py-3.5 transition-all duration-300 ease-out w-auto max-w-[94%] min-w-[250px] active:scale-[0.98]">
+          
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <span class="bg-[#C8E7FF] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold text-[#4A3B32]">
+              💬 하치와레의 사전 안내
+            </span>
+            <span id="p1-counter" class="text-xs font-bold text-[#9C4138] bg-[#FFF0D6] px-2 py-0.5 rounded-full border border-[#4A3B32]">
+              1 / 4
+            </span>
+          </div>
+
+          <!-- Typewriter Text Output -->
+          <p id="p1-typewriter" class="text-lg sm:text-xl font-bold text-[#3B2B20] leading-snug break-keep min-h-[2.6rem]">
+          </p>
+
+          <div class="flex items-center justify-between mt-2 pt-1.5 border-t border-dashed border-[#D8C7B2]">
+            <span class="text-xs font-bold text-[#8A725E]">📅 ~10/28 점심 · 진로상담실</span>
+            <span id="p1-next-btn" class="text-xs sm:text-sm font-black text-[#E04F44] blink-arrow">
+              터치해서 다음 대사 ▶
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         PAGE 2: 마쯔리 입구 토리이 (치이카와 & 하치와레 + 보유 포인트 안내)
+    ======================================================================== -->
+    <section class="slide-page pt-20 pb-3 px-3">
+      <!-- TOP VISUAL: GRAND TORII GATE -->
+      <div class="relative w-full max-w-md mx-auto h-[44dvh] flex flex-col items-center justify-end z-20">
+        <!-- Grand Red Torii Gate Structure -->
+        <div class="relative w-full max-w-[350px] flex flex-col items-center">
+          <!-- Top Kasagi Curved Beam -->
+          <div class="w-[100%] h-5 bg-[#D93B30] border-[3px] border-[#4A3B32] rounded-full shadow-sm relative">
+            <div class="w-[92%] h-2 bg-[#3B2B20] mx-auto -mt-1 rounded-t-full"></div>
+          </div>
+          <!-- Shimaki Secondary Beam -->
+          <div class="w-[86%] h-4 bg-[#E04F44] border-x-[3px] border-b-[3px] border-[#4A3B32] mt-1.5 relative flex justify-between px-6">
+            <!-- Hanging Lanterns -->
+            <div class="lantern-sway -mt-1 bg-[#FFF3D1] border-2 border-[#4A3B32] w-8 h-10 rounded-full flex items-center justify-center font-jp-sign text-xs text-[#D93B30] font-bold shadow">祭</div>
+            <div class="lantern-sway-delayed -mt-1 bg-[#FFF3D1] border-2 border-[#4A3B32] w-8 h-10 rounded-full flex items-center justify-center font-jp-sign text-xs text-[#D93B30] font-bold shadow">歓迎</div>
+          </div>
+
+          <!-- Torii Signboard (와쿠와쿠 마쯔리) -->
+          <div class="signboard-wood px-5 py-1.5 -mt-3 z-20 text-center min-w-[235px]">
+            <div class="font-jp-sign text-2xl sm:text-3xl font-black text-[#D93B30] leading-none">わくわく祭り</div>
+            <div class="text-xs font-bold text-[#4A3B32] mt-0.5">[ 와 쿠 와 쿠 마 쯔 리 ]</div>
+            <div class="text-[11px] font-bold text-[#5C4938] bg-[#FFFDF7]/90 px-2 rounded-full inline-block mt-0.5 border border-[#4A3B32]/30">두근두근 축제 (4층 2-1반 교실)</div>
+          </div>
+
+          <!-- Torii Pillars & Welcoming Chiikawa + Hachiware -->
+          <div class="w-[82%] h-32 relative flex items-end justify-center pb-1">
+            <!-- Left Red Pillar -->
+            <div class="absolute left-3 top-0 bottom-0 w-6 bg-[#E04F44] border-[3px] border-[#4A3B32] rounded-b-md">
+              <div class="position absolute bottom-0 inset-x-[-3px] h-4 bg-[#3B2B20] border-2 border-[#4A3B32]"></div>
+            </div>
+            <!-- Right Red Pillar -->
+            <div class="absolute right-3 top-0 bottom-0 w-6 bg-[#E04F44] border-[3px] border-[#4A3B32] rounded-b-md">
+              <div class="position absolute bottom-0 inset-x-[-3px] h-4 bg-[#3B2B20] border-2 border-[#4A3B32]"></div>
+            </div>
+
+            <!-- Welcoming Chiikawa & Hachiware inside Torii -->
+            <div class="char-bounce flex items-end gap-1 z-10">
+              <!-- Chiikawa with Festival Fan -->
+              <svg width="84" height="82" viewBox="0 0 100 95">
+                <circle cx="26" cy="22" r="10" fill="#FFF" stroke="#4A3B32" stroke-width="3.2"/>
+                <circle cx="74" cy="22" r="10" fill="#FFF" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 20,52 C 16,24 84,24 80,52 C 84,72 78,88 66,90 L 34,90 C 22,88 16,72 20,52 Z" fill="#FFF" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 22,33 Q 50,27 78,33" fill="none" stroke="#E04F44" stroke-width="4.5"/>
+                <circle cx="38" cy="50" r="3.8" fill="#4A3B32"/>
+                <circle cx="62" cy="50" r="3.8" fill="#4A3B32"/>
+                <ellipse cx="29" cy="56" rx="5" ry="2.8" fill="#FF9EB5"/>
+                <ellipse cx="71" cy="56" rx="5" ry="2.8" fill="#FF9EB5"/>
+                <path d="M 46,55 Q 50,60 54,55" fill="none" stroke="#4A3B32" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Uchiwa Fan -->
+                <circle cx="15" cy="52" r="11" fill="#E04F44" stroke="#4A3B32" stroke-width="2.5"/>
+                <text x="10" y="56" font-size="10" fill="#FFF" font-weight="bold">祭</text>
+              </svg>
+
+              <!-- Hachiware pointing right -->
+              <svg width="84" height="82" viewBox="0 0 100 95">
+                <polygon points="22,32 16,8 40,22" fill="#6CA6CD" stroke="#4A3B32" stroke-width="3.2"/>
+                <polygon points="78,32 84,8 60,22" fill="#6CA6CD" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 20,52 C 16,24 84,24 80,52 C 84,72 78,88 66,90 L 34,90 C 22,88 16,72 20,52 Z" fill="#FFF" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 21,40 C 30,24 44,28 50,40 C 56,28 70,24 79,40 C 75,24 62,20 50,21 C 38,20 25,24 21,40 Z" fill="#6CA6CD" stroke="#4A3B32" stroke-width="2.8"/>
+                <circle cx="38" cy="50" r="3.8" fill="#4A3B32"/>
+                <circle cx="62" cy="50" r="3.8" fill="#4A3B32"/>
+                <ellipse cx="29" cy="56" rx="5" ry="2.8" fill="#FFA8B8"/>
+                <ellipse cx="71" cy="56" rx="5" ry="2.8" fill="#FFA8B8"/>
+                <path d="M 44,54 Q 50,61 56,54 Z" fill="#FF8DA1" stroke="#4A3B32" stroke-width="2.2"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE ROAD AREA -->
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+        <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">
+          ⬅ 기부 안내
+        </button>
+        <button onclick="nextSlide()" class="pointer-events-auto bg-[#F6C343] text-[#4A3B32] border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">
+          합격신사 구경하기 ➔
+        </button>
+      </div>
+
+      <!-- BOTTOM SECTION: VISITOR NAME + POINT WALLET & DESCRIPTION -->
+      <div class="relative w-full max-w-md mx-auto h-[37dvh] flex flex-col justify-start z-20">
+        <div class="comic-box bg-white p-3.5 relative">
+          <!-- Visitor Pass Header -->
+          <div class="flex flex-wrap items-center justify-between gap-1.5 bg-[#FFF6DD] border-2 border-[#4A3B32] rounded-xl px-3 py-1.5 mb-2">
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-black bg-[#E04F44] text-white px-2 py-0.5 rounded-md border border-[#4A3B32]">마쯔리 통행증</span>
+              <span class="text-base sm:text-lg font-bold"><strong id="visitor-name" class="text-[#D93B30] underline">장훈고 학생</strong>님</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-bold bg-[#FFE082] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full">
+                보유 포인트: <strong id="visitor-points" class="text-[#D93B30] text-base">12</strong> P
+              </span>
+              <button onclick="openVisitorModal()" class="text-xs font-bold bg-white border border-[#4A3B32] px-2 py-0.5 rounded-lg hover:bg-gray-100">
+                ✏️ 변경
+              </button>
+            </div>
+          </div>
+
+          <!-- Character Greeting Message -->
+          <p class="text-base sm:text-lg font-bold text-[#3B2B20] leading-snug break-keep">
+            “와아…! <span id="visitor-name-inline" class="text-[#E04F44]">장훈고 학생</span>님 안녕하세요! 현재 보유 포인트는 <span id="visitor-points-inline" class="text-[#E04F44]">12</span>포인트입니다! 얏타~!<br/>
+            장훈제 당일 일본어탐구 동아리 부스는 <span class="bg-[#FFE082] px-1.5 rounded border border-[#4A3B32]">4층 2-1반 교실</span>로 오면 돼! 오른쪽으로 스와이프하면 축제를 미리 즐길 수 있다구~ 👉”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         PAGE 3: 부스 1 - 合格神社 (합격신사 / 치이카와)
+    ======================================================================== -->
+    <section class="slide-page pt-20 pb-3 px-3">
+      <!-- TOP VISUAL: SHRINE YATAI -->
+      <div class="relative w-full max-w-md mx-auto h-[44dvh] flex flex-col items-center justify-end z-20">
+        <div class="relative w-full max-w-[350px] flex flex-col items-center">
+          <!-- Shrine Roof -->
+          <div class="w-[98%] h-7 bg-[#4A3B32] border-[3px] border-[#4A3B32] rounded-t-3xl flex items-center justify-center relative shadow-sm">
+            <div class="w-8 h-3 bg-[#F6C343] border-2 border-[#4A3B32] rounded-full"></div>
+          </div>
+          <div class="w-[92%] h-4 bg-[#D93B30] border-x-[3px] border-b-[3px] border-[#4A3B32]"></div>
+
+          <!-- Signboard -->
+          <div class="signboard-wood px-5 py-1.5 -mt-2 z-20 text-center min-w-[225px]">
+            <div class="font-jp-sign text-2xl sm:text-3xl font-black text-[#3B2B20] leading-none">合格神社</div>
+            <div class="text-xs font-bold text-[#9C4138] mt-0.5">[ 고 - 카 쿠 진 쟈 ]</div>
+            <div class="text-[11px] font-bold text-[#5C4938] bg-[#FFFDF7]/90 px-2 rounded-full inline-block mt-0.5 border border-[#4A3B32]/30">합격신사 (운세 & 부적)</div>
+          </div>
+
+          <!-- Shrine Booth Interior with Chiikawa -->
+          <div class="w-[88%] bg-[#FFF5EB] border-x-[3px] border-b-[3px] border-[#4A3B32] rounded-b-xl px-4 pt-2 pb-1 flex items-end justify-around relative shadow-[0_4px_0_#4A3B32]">
+            <!-- Bell & Rope -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
+              <div class="w-4 h-4 rounded-full bg-[#F6C343] border-2 border-[#4A3B32]"></div>
+              <div class="w-1.5 h-8 bg-[#E04F44] border border-[#4A3B32]"></div>
+            </div>
+
+            <!-- Omikuji Cylinder Box -->
+            <div class="flex flex-col items-center mb-1">
+              <div class="w-11 h-16 bg-[#D9822B] border-2 border-[#4A3B32] rounded-md flex items-center justify-center rotate-[-6deg] shadow-sm">
+                <span class="font-jp-sign text-xs font-bold text-white bg-[#E04F44] px-1 py-2 rounded border border-[#4A3B32]">御神籤</span>
+              </div>
+              <span class="text-[10px] font-bold mt-0.5">오미쿠지통</span>
+            </div>
+
+            <!-- Praying Chiikawa SVG -->
+            <div class="char-wiggle flex flex-col items-center z-10">
+              <svg width="96" height="88" viewBox="0 0 110 100">
+                <!-- Sweat drops of earnest prayer -->
+                <path d="M 14,32 Q 10,38 15,40 Q 20,38 14,32 Z" fill="#7AD7F0" stroke="#4A3B32" stroke-width="2"/>
+                <circle cx="28" cy="24" r="11" fill="#FFF" stroke="#4A3B32" stroke-width="3.5"/>
+                <circle cx="82" cy="24" r="11" fill="#FFF" stroke="#4A3B32" stroke-width="3.5"/>
+                <path d="M 22,55 C 18,25 92,25 88,55 C 92,76 86,92 72,94 L 38,94 C 24,92 18,76 22,55 Z" fill="#FFF" stroke="#4A3B32" stroke-width="3.5"/>
+                <!-- Shrine Miko Red Ribbon -->
+                <path d="M 32,29 Q 55,35 78,29" fill="none" stroke="#E04F44" stroke-width="4" stroke-linecap="round"/>
+                <!-- Tightly praying eyes (> <) -->
+                <path d="M 36,50 L 45,54 L 36,58" fill="none" stroke="#4A3B32" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 74,50 L 65,54 L 74,58" fill="none" stroke="#4A3B32" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <ellipse cx="31" cy="62" rx="6" ry="3.2" fill="#FF9EB5"/>
+                <ellipse cx="79" cy="62" rx="6" ry="3.2" fill="#FF9EB5"/>
+                <!-- Trembling cute mouth -->
+                <path d="M 48,62 Q 51,59 55,62 Q 59,65 62,62" fill="none" stroke="#4A3B32" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Paws together praying -->
+                <ellipse cx="52" cy="76" rx="7" ry="9" fill="#FFF" stroke="#4A3B32" stroke-width="3"/>
+                <ellipse cx="58" cy="76" rx="7" ry="9" fill="#FFF" stroke="#4A3B32" stroke-width="3"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#FFD6E0] px-2 rounded-full border border-[#4A3B32] -mt-2">신사 당번 치이카와</span>
+            </div>
+
+            <!-- Omamori Lucky Charm -->
+            <div class="flex flex-col items-center mb-1">
+              <div class="w-12 h-15 bg-[#E04F44] border-2 border-[#4A3B32] rounded-t-xl rounded-b-md p-1 flex flex-col items-center shadow-sm">
+                <div class="w-3 h-2 bg-[#F6C343] rounded-full border border-[#4A3B32] -mt-2"></div>
+                <span class="font-jp-sign text-xs text-white font-bold leading-tight mt-1">合格<br/>御守</span>
+              </div>
+              <span class="text-[10px] font-bold mt-0.5">오마모리</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE ROAD AREA -->
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+        <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 입구 토리이</button>
+        <button onclick="nextSlide()" class="pointer-events-auto bg-[#F6C343] border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">3분 승부 라면 ➔</button>
+      </div>
+
+      <!-- BOTTOM SECTION: MENU + CHIIKAWA DIALOGUE -->
+      <div class="relative w-full max-w-md mx-auto h-[37dvh] flex flex-col justify-start z-20">
+        <div class="comic-box bg-white p-3.5">
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="bg-[#FFD6E0] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold">⛩️ 부스 1 · 합격신사</span>
+            <span class="bg-[#FFF4CC] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black text-[#D93B30]">🎯 오미쿠지 뽑기 : 1P</span>
+            <span class="bg-[#FFF4CC] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black text-[#D93B30]">🧧 오마모리 : 3P</span>
+          </div>
+          <p class="text-base sm:text-lg font-bold text-[#3B2B20] leading-snug break-keep">
+            “운세 뽑기 오미쿠지… 제발 대길(大吉) 나와라… 얍!! 💦<br/>
+            히잉, 내신 1등급이랑 수능 대박을 기원하는 귀여운 <span class="text-[#E04F44]">오마모리(부적)</span>도 정성껏 준비했어…! 복 받으러 꼭 들러줘…!”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         PAGE 4: 부스 2 - 三分勝負 (3분 승부 라면 야타이 / 쿠리만쥬 & 우사기)
+    ======================================================================== -->
+    <section class="slide-page pt-20 pb-3 px-3">
+      <!-- TOP VISUAL: RAMEN YATAI -->
+      <div class="relative w-full max-w-md mx-auto h-[44dvh] flex flex-col items-center justify-end z-20">
+        <div class="relative w-full max-w-[350px] flex flex-col items-center">
+          <!-- Yatai Wooden Slanted Roof -->
+          <div class="w-[98%] h-7 bg-[#8C5230] border-[3px] border-[#4A3B32] rounded-t-xl flex overflow-hidden">
+            <div class="flex-1 border-r-2 border-[#4A3B32] bg-[#A4633B]"></div>
+            <div class="flex-1 border-r-2 border-[#4A3B32] bg-[#8C5230]"></div>
+            <div class="flex-1 border-r-2 border-[#4A3B32] bg-[#A4633B]"></div>
+            <div class="flex-1 border-r-2 border-[#4A3B32] bg-[#8C5230]"></div>
+            <div class="flex-1 bg-[#A4633B]"></div>
+          </div>
+
+          <!-- Signboard -->
+          <div class="signboard-wood px-5 py-1.5 -mt-2 z-20 text-center min-w-[225px]">
+            <div class="font-jp-sign text-2xl sm:text-3xl font-black text-[#D93B30] leading-none">三分勝負</div>
+            <div class="text-xs font-bold text-[#4A3B32] mt-0.5">[ 산 푼 쇼 - 부 ]</div>
+            <div class="text-[11px] font-bold text-[#5C4938] bg-[#FFFDF7]/90 px-2 rounded-full inline-block mt-0.5 border border-[#4A3B32]/30">3분 승부 (닛신 컵누들 & 치킨라멘)</div>
+          </div>
+
+          <!-- Ramen Booth Interior with Kurimanju & Usagi -->
+          <div class="w-[90%] bg-[#FFF3DF] border-x-[3px] border-b-[3px] border-[#4A3B32] rounded-b-xl px-2 pt-2 pb-1 flex items-end justify-around relative shadow-[0_4px_0_#4A3B32]">
+            <!-- Noren Curtains -->
+            <div class="absolute top-0 inset-x-3 flex justify-between pointer-events-none">
+              <div class="bg-[#E04F44] text-white text-[10px] font-jp-sign px-2 py-0.5 border-x-2 border-b-2 border-[#4A3B32] rounded-b">日清</div>
+              <div class="bg-[#E04F44] text-white text-[10px] font-jp-sign px-2 py-0.5 border-x-2 border-b-2 border-[#4A3B32] rounded-b">紅茶</div>
+            </div>
+
+            <!-- Kurimanju SVG ("Kyahaa~!") -->
+            <div class="char-bounce flex flex-col items-center z-10">
+              <svg width="88" height="84" viewBox="0 0 105 95">
+                <!-- Ears -->
+                <circle cx="24" cy="30" r="8" fill="#FFF" stroke="#4A3B32" stroke-width="3"/>
+                <circle cx="81" cy="30" r="8" fill="#FFF" stroke="#4A3B32" stroke-width="3"/>
+                <!-- Head with Chestnut Brown Top -->
+                <path d="M 20,54 C 16,24 89,24 85,54 C 89,75 83,90 70,92 L 35,92 C 22,90 16,75 20,54 Z" fill="#FFF" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 22,42 C 28,22 77,22 83,42 Q 52,48 22,42 Z" fill="#9E5B34" stroke="#4A3B32" stroke-width="3"/>
+                <!-- Happy Savoring Eyes -->
+                <path d="M 35,51 Q 41,46 46,51" fill="none" stroke="#4A3B32" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 59,51 Q 64,46 70,51" fill="none" stroke="#4A3B32" stroke-width="3" stroke-linecap="round"/>
+                <!-- Big "Kyahaa!" Mouth -->
+                <path d="M 45,58 Q 52.5,69 60,58 Z" fill="#E04F44" stroke="#4A3B32" stroke-width="2.5"/>
+                <ellipse cx="30" cy="58" rx="5" ry="2.8" fill="#FF9EB5"/>
+                <ellipse cx="75" cy="58" rx="5" ry="2.8" fill="#FF9EB5"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#F4DFB6] px-2 rounded-full border border-[#4A3B32] -mt-2">쿠리만쥬</span>
+            </div>
+
+            <!-- Steaming Nissin Cup Noodle & Afternoon Tea -->
+            <div class="flex items-end gap-1.5 mb-1 z-10">
+              <div class="relative flex flex-col items-center">
+                <!-- Steam -->
+                <div class="steam-anim text-xs font-bold text-[#9C4138] -mb-1">♨️</div>
+                <div class="w-11 h-14 bg-white border-2 border-[#4A3B32] rounded-b-lg flex flex-col items-center justify-between p-0.5 shadow-sm">
+                  <div class="w-full h-2 bg-[#E04F44]"></div>
+                  <span class="text-[9px] font-black text-[#E04F44] leading-none text-center">CUP<br/>NOODLE</span>
+                  <div class="w-full h-1.5 bg-[#F6C343]"></div>
+                </div>
+              </div>
+              <!-- Gogo no Kocha (Afternoon Tea) -->
+              <div class="w-7 h-14 bg-[#C83E37] border-2 border-[#4A3B32] rounded-t-lg rounded-b-md flex flex-col items-center justify-center shadow-sm">
+                <div class="w-3.5 h-2.5 bg-[#F6C343] border border-[#4A3B32] -mt-3 rounded-sm"></div>
+                <span class="text-[8px] font-bold text-white text-center leading-tight mt-1">오후의<br/>홍차</span>
+              </div>
+            </div>
+
+            <!-- Usagi SVG with Chopsticks -->
+            <div class="char-wiggle flex flex-col items-center z-10">
+              <svg width="88" height="88" viewBox="0 0 105 100">
+                <!-- Long Rabbit Ears -->
+                <ellipse cx="38" cy="18" rx="7" ry="18" fill="#FFF0B8" stroke="#4A3B32" stroke-width="3.2"/>
+                <ellipse cx="67" cy="18" rx="7" ry="18" fill="#FFF0B8" stroke="#4A3B32" stroke-width="3.2"/>
+                <!-- Body -->
+                <path d="M 22,58 C 18,32 87,32 83,58 C 87,78 81,92 68,94 L 37,94 C 24,92 18,78 22,58 Z" fill="#FFF0B8" stroke="#4A3B32" stroke-width="3.2"/>
+                <!-- Eyes -->
+                <circle cx="40" cy="55" r="4" fill="#4A3B32"/>
+                <circle cx="65" cy="55" r="4" fill="#4A3B32"/>
+                <ellipse cx="30" cy="61" rx="5" ry="2.8" fill="#FFA8B8"/>
+                <ellipse cx="75" cy="61" rx="5" ry="2.8" fill="#FFA8B8"/>
+                <path d="M 46,60 Q 52.5,67 59,60" fill="none" stroke="#4A3B32" stroke-width="2.8" stroke-linecap="round"/>
+                <!-- Holding Chopsticks -->
+                <line x1="12" y1="68" x2="36" y2="75" stroke="#8C5230" stroke-width="3" stroke-linecap="round"/>
+                <line x1="12" y1="74" x2="36" y2="77" stroke="#8C5230" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#FFF0B8] px-2 rounded-full border border-[#4A3B32] -mt-2">우사기</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE ROAD AREA -->
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+        <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 합격신사</button>
+        <button onclick="nextSlide()" class="pointer-events-auto bg-[#F6C343] border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">아키하바라 골목 ➔</button>
+      </div>
+
+      <!-- BOTTOM SECTION: MENU + KURIMANJU DIALOGUE -->
+      <div class="relative w-full max-w-md mx-auto h-[37dvh] flex flex-col justify-start z-20">
+        <div class="comic-box bg-white p-3.5">
+          <div class="flex flex-wrap items-center gap-1.5 mb-2">
+            <span class="bg-[#F4DFB6] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold">🍜 부스 2 · 3분 승부</span>
+            <span class="bg-[#FFF4CC] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black text-[#D93B30]">🍥 라면별 : 1~4P</span>
+            <span class="bg-[#FFF4CC] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black text-[#D93B30]">🧋 오후의 홍차 : 2P</span>
+          </div>
+          <p class="text-base sm:text-lg font-bold text-[#3B2B20] leading-snug break-keep">
+            “크하하하―! 캬아~! 뜨거운 물 붓고 딱 3분! 일본 본토 닛신 컵누들과 원조 치킨라멘 국물 한 입이면 극락이라구…!<br/>
+            향긋하고 달달한 <span class="text-[#E04F44]">오후의 홍차</span>까지 같이 마시면 완벽 그 자체! 우라 야하~!”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         PAGE 5: 부스 3 - 秋葉原横丁 (아키하바라 골목 / 모몽가)
+    ======================================================================== -->
+    <section class="slide-page pt-20 pb-3 px-3">
+      <!-- TOP VISUAL: AKIHABARA GACHA & GOODS BOOTH -->
+      <div class="relative w-full max-w-md mx-auto h-[44dvh] flex flex-col items-center justify-end z-20">
+        <div class="relative w-full max-w-[350px] flex flex-col items-center">
+          <!-- Neon Pop Roof -->
+          <div class="w-[96%] h-7 bg-[#FFDF4F] border-[3px] border-[#4A3B32] rounded-t-2xl flex items-center justify-around px-4">
+            <span class="text-[11px] font-black text-[#E04F44]">★ GACHA ★</span>
+            <span class="text-[11px] font-black text-[#3B5998]">★ FIGURE ★</span>
+            <span class="text-[11px] font-black text-[#E04F44]">★ GOODS ★</span>
+          </div>
+
+          <!-- Signboard -->
+          <div class="signboard-wood px-5 py-1.5 -mt-2 z-20 text-center min-w-[235px]">
+            <div class="font-jp-sign text-2xl sm:text-3xl font-black text-[#3B2B20] leading-none">秋葉原横丁</div>
+            <div class="text-xs font-bold text-[#9C4138] mt-0.5">[ 아 키 하 바 라 요 코 초 - ]</div>
+            <div class="text-[11px] font-bold text-[#5C4938] bg-[#FFFDF7]/90 px-2 rounded-full inline-block mt-0.5 border border-[#4A3B32]/30">아키하바라 골목 (피규어·굿즈·가챠)</div>
+          </div>
+
+          <!-- Booth Interior with Gacha Machine & Momonga -->
+          <div class="w-[90%] bg-[#F3EEFF] border-x-[3px] border-b-[3px] border-[#4A3B32] rounded-b-xl px-3 pt-2 pb-1 flex items-end justify-around relative shadow-[0_4px_0_#4A3B32]">
+            <!-- Gachapon Machine SVG -->
+            <div class="flex flex-col items-center mb-1">
+              <div class="w-14 h-20 bg-[#E04F44] border-2 border-[#4A3B32] rounded-lg p-1 flex flex-col items-center justify-between shadow-sm">
+                <!-- Capsule Dome -->
+                <div class="w-full h-10 bg-white border-2 border-[#4A3B32] rounded-md flex flex-wrap items-center justify-center gap-0.5 p-0.5 overflow-hidden">
+                  <span class="w-3 h-3 rounded-full bg-[#FF80AB] border border-[#4A3B32]"></span>
+                  <span class="w-3 h-3 rounded-full bg-[#4FC3F7] border border-[#4A3B32]"></span>
+                  <span class="w-3 h-3 rounded-full bg-[#FFD54F] border border-[#4A3B32]"></span>
+                  <span class="w-3 h-3 rounded-full bg-[#81C784] border border-[#4A3B32]"></span>
+                </div>
+                <!-- Turn Handle -->
+                <div class="w-5 h-5 rounded-full bg-[#F6C343] border-2 border-[#4A3B32] flex items-center justify-center">
+                  <div class="w-3 h-1 bg-[#4A3B32]"></div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold mt-0.5">가챠 머신</span>
+            </div>
+
+            <!-- Momonga SVG (Sparkling & Cheeky) -->
+            <div class="char-bounce flex flex-col items-center z-10">
+              <svg width="96" height="88" viewBox="0 0 115 100">
+                <!-- Fluffy Flying Squirrel Tail -->
+                <path d="M 80,75 C 108,65 110,25 84,32 C 74,35 74,58 80,75 Z" fill="#DCE2F0" stroke="#4A3B32" stroke-width="3.2"/>
+                <!-- Ears -->
+                <ellipse cx="26" cy="24" rx="8" ry="12" transform="rotate(-15 26 24)" fill="#DCE2F0" stroke="#4A3B32" stroke-width="3.2"/>
+                <ellipse cx="78" cy="24" rx="8" ry="12" transform="rotate(15 78 24)" fill="#DCE2F0" stroke="#4A3B32" stroke-width="3.2"/>
+                <!-- Head & Fluffy Cheeks -->
+                <path d="M 18,56 C 12,26 92,26 86,56 C 92,76 84,92 68,94 L 36,94 C 20,92 12,76 18,56 Z" fill="#FFFFFF" stroke="#4A3B32" stroke-width="3.5"/>
+                <!-- Big Sparkling Eyes -->
+                <circle cx="38" cy="52" r="5" fill="#4A3B32"/>
+                <circle cx="66" cy="52" r="5" fill="#4A3B32"/>
+                <circle cx="36.5" cy="50" r="2" fill="#FFF"/>
+                <circle cx="64.5" cy="50" r="2" fill="#FFF"/>
+                <ellipse cx="27" cy="59" rx="6" ry="3.2" fill="#FF9EB5"/>
+                <ellipse cx="77" cy="59" rx="6" ry="3.2" fill="#FF9EB5"/>
+                <!-- Cheeky open mouth -->
+                <path d="M 47,57 Q 52,65 57,57 Z" fill="#FF7BAC" stroke="#4A3B32" stroke-width="2.5"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#E1D8FF] px-2 rounded-full border border-[#4A3B32] -mt-2">모몽가</span>
+            </div>
+
+            <!-- Figure Display Box -->
+            <div class="flex flex-col items-center mb-1">
+              <div class="w-13 h-16 bg-[#FFF9EA] border-2 border-[#4A3B32] rounded-lg p-1 flex flex-col items-center justify-center shadow-sm">
+                <span class="text-lg">🤖</span>
+                <span class="text-[9px] font-bold text-[#4A3B32] leading-tight">레어 피규어</span>
+              </div>
+              <span class="text-[10px] font-bold mt-0.5">교환·판매</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE ROAD AREA -->
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+        <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 3분 승부</button>
+        <button onclick="nextSlide()" class="pointer-events-auto bg-[#F6C343] border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">먹 향기 암자 ➔</button>
+      </div>
+
+      <!-- BOTTOM SECTION: MENU + MOMONGA DIALOGUE -->
+      <div class="relative w-full max-w-md mx-auto h-[37dvh] flex flex-col justify-start z-20">
+        <div class="comic-box bg-white p-3.5">
+          <div class="flex flex-wrap items-center gap-1.5 mb-2">
+            <span class="bg-[#E1D8FF] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold">ガチャ 부스 3 · 아키하바라 골목</span>
+            <span class="bg-[#FFF4CC] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black text-[#D93B30]">🎁 피규어·굿즈 : 상품별 상이</span>
+            <span class="bg-[#FFF4CC] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black text-[#D93B30]">🔮 가챠가챠 : 4P</span>
+          </div>
+          <p class="text-base sm:text-lg font-bold text-[#3B2B20] leading-snug break-keep">
+            “이봐! 어서 가챠가챠를 돌려보라구! 얏―!<br/>
+            친구들이 기부한 보물 같은 <span class="text-[#E04F44]">한정판 피규어랑 애니메이션 굿즈</span>도 포인트로 전부 데려갈 수 있어! 날 찬양해라~ 부러워해라~!”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         PAGE 6: 부스 4 - 墨香庵 (먹 향기 나는 암자 / 서예 하치와레)
+    ======================================================================== -->
+    <section class="slide-page pt-20 pb-3 px-3">
+      <!-- TOP VISUAL: CALLIGRAPHY & EMA BOOTH -->
+      <div class="relative w-full max-w-md mx-auto h-[44dvh] flex flex-col items-center justify-end z-20">
+        <div class="relative w-full max-w-[350px] flex flex-col items-center">
+          <!-- Traditional Dark Tile Roof -->
+          <div class="w-[96%] h-7 bg-[#3B3A36] border-[3px] border-[#4A3B32] rounded-t-2xl flex overflow-hidden">
+            <div class="flex-1 border-r border-[#5C5A54]"></div>
+            <div class="flex-1 border-r border-[#5C5A54]"></div>
+            <div class="flex-1 border-r border-[#5C5A54]"></div>
+            <div class="flex-1 border-r border-[#5C5A54]"></div>
+            <div class="flex-1"></div>
+          </div>
+
+          <!-- Signboard -->
+          <div class="signboard-wood px-5 py-1.5 -mt-2 z-20 text-center min-w-[225px]">
+            <div class="font-jp-sign text-2xl sm:text-3xl font-black text-[#2C2520] leading-none">墨香庵</div>
+            <div class="text-xs font-bold text-[#9C4138] mt-0.5">[ 봇 코 - 안 ]</div>
+            <div class="text-[11px] font-bold text-[#5C4938] bg-[#FFFDF7]/90 px-2 rounded-full inline-block mt-0.5 border border-[#4A3B32]/30">먹 향기 나는 암자 (붓글씨 부채·에마)</div>
+          </div>
+
+          <!-- Booth Interior with Calligraphy Hachiware -->
+          <div class="w-[90%] bg-[#F7F3E8] border-x-[3px] border-b-[3px] border-[#4A3B32] rounded-b-xl px-3 pt-2 pb-1 flex items-end justify-around relative shadow-[0_4px_0_#4A3B32]">
+            <!-- Wooden Ema Plaque Rack -->
+            <div class="flex flex-col items-center mb-1">
+              <div class="w-13 h-14 bg-[#E5C185] border-2 border-[#4A3B32] px-1.5 py-1 flex flex-col items-center justify-center shadow-sm" style="clip-path: polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%);">
+                <span class="font-jp-sign text-xs font-black text-[#3B2B20] mt-1">必勝</span>
+                <span class="text-[8px] font-bold text-[#9C4138]">소원에마</span>
+              </div>
+              <span class="text-[10px] font-bold mt-0.5">나무 에마(1P)</span>
+            </div>
+
+            <!-- Hachiware Holding Big Calligraphy Brush + Ink Smudge on Cheek -->
+            <div class="char-bounce flex flex-col items-center z-10">
+              <svg width="96" height="88" viewBox="0 0 115 100">
+                <polygon points="22,36 16,10 42,24" fill="#6CA6CD" stroke="#4A3B32" stroke-width="3.5"/>
+                <polygon points="88,36 94,10 68,24" fill="#6CA6CD" stroke="#4A3B32" stroke-width="3.5"/>
+                <path d="M 22,55 C 18,24 92,24 88,55 C 92,76 86,92 72,94 L 38,94 C 24,92 18,76 22,55 Z" fill="#FFF" stroke="#4A3B32" stroke-width="3.5"/>
+                <path d="M 23,43 C 32,25 48,30 55,44 C 62,30 78,25 87,43 C 83,26 67,22 55,23 C 43,22 27,26 23,43 Z" fill="#6CA6CD" stroke="#4A3B32" stroke-width="3"/>
+                <circle cx="41" cy="54" r="4.2" fill="#4A3B32"/>
+                <circle cx="69" cy="54" r="4.2" fill="#4A3B32"/>
+                <!-- Cute Black Ink Smudge on Cheek! -->
+                <circle cx="76" cy="58" r="3.5" fill="#2C2520"/>
+                <circle cx="31" cy="60" r="4.5" fill="#FFA8B8" opacity="0.8"/>
+                <path d="M 48,59 Q 51.5,63 55,59 Q 58.5,63 62,59" fill="none" stroke="#4A3B32" stroke-width="2.8" stroke-linecap="round"/>
+                <!-- Giant Calligraphy Brush -->
+                <line x1="25" y1="78" x2="88" y2="62" stroke="#8C5230" stroke-width="6" stroke-linecap="round"/>
+                <path d="M 86,62 C 98,55 104,64 92,70 Z" fill="#2C2520" stroke="#4A3B32" stroke-width="2.5"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#C8E7FF] px-2 rounded-full border border-[#4A3B32] -mt-2">서예가 하치와레</span>
+            </div>
+
+            <!-- Hand Fan (Uchiwa) -->
+            <div class="flex flex-col items-center mb-1">
+              <div class="w-12 h-12 rounded-full bg-white border-2 border-[#4A3B32] flex items-center justify-center shadow-sm">
+                <span class="font-jp-sign text-sm font-black text-[#2C2520]">夢</span>
+              </div>
+              <div class="w-1.5 h-3 bg-[#C88A52] border border-[#4A3B32] -mt-0.5"></div>
+              <span class="text-[10px] font-bold mt-0.5">부채(2P)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE ROAD AREA -->
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+        <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 아키하바라</button>
+        <button onclick="nextSlide()" class="pointer-events-auto bg-[#F6C343] border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">켄다마 도장 ➔</button>
+      </div>
+
+      <!-- BOTTOM SECTION: MENU + HACHIWARE DIALOGUE -->
+      <div class="relative w-full max-w-md mx-auto h-[37dvh] flex flex-col justify-start z-20">
+        <div class="comic-box bg-white p-3.5">
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="bg-[#C8E7FF] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold">🖌️ 부스 4 · 먹 향기 암자</span>
+            <span class="bg-[#FFF4CC] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black text-[#D93B30]">🪭 부채 : 2P</span>
+            <span class="bg-[#FFF4CC] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black text-[#D93B30]">🪵 나무 에마 : 1P</span>
+          </div>
+          <p class="text-base sm:text-lg font-bold text-[#3B2B20] leading-snug break-keep">
+            “붓글씨 진짜 잘 쓰는 장인 친구가 직접 체험 코너도 운영하고, <span class="text-[#E04F44]">부채랑 나무로 된 소원 에마</span>에 원하는 문구를 멋지게 적어준대!<br/>
+            먹 향기 솔솔~ 세상에 하나뿐인 기념품, 진짜 멋지지 않아?!”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         PAGE 7: 부스 5 - 剣玉道場 (켄다마 도장 / 랏코 선배 & 우사기)
+    ======================================================================== -->
+    <section class="slide-page pt-20 pb-3 px-3">
+      <!-- TOP VISUAL: KENDAMA DOJO -->
+      <div class="relative w-full max-w-md mx-auto h-[44dvh] flex flex-col items-center justify-end z-20">
+        <div class="relative w-full max-w-[350px] flex flex-col items-center">
+          <!-- Dojo Roof -->
+          <div class="w-[98%] h-7 bg-[#2C3E50] border-[3px] border-[#4A3B32] rounded-t-2xl flex items-center justify-between px-4">
+            <span class="text-[11px] font-bold text-[#F6C343]">⚔️ 3연속 콤보</span>
+            <span class="text-[11px] font-bold text-[#F6C343]">성공 시 특별 상품! 🏆</span>
+          </div>
+
+          <!-- Signboard -->
+          <div class="signboard-wood px-5 py-1.5 -mt-2 z-20 text-center min-w-[225px]">
+            <div class="font-jp-sign text-2xl sm:text-3xl font-black text-[#3B2B20] leading-none">剣玉道場</div>
+            <div class="text-xs font-bold text-[#9C4138] mt-0.5">[ 켄 다 마 도 - 죠 - ]</div>
+            <div class="text-[11px] font-bold text-[#5C4938] bg-[#FFFDF7]/90 px-2 rounded-full inline-block mt-0.5 border border-[#4A3B32]/30">켄다마 도장 (3동작 원샷 챌린지)</div>
+          </div>
+
+          <!-- Booth Interior with Rakko Master & Usagi -->
+          <div class="w-[90%] bg-[#FFF8EB] border-x-[3px] border-b-[3px] border-[#4A3B32] rounded-b-xl px-2 pt-2 pb-1 flex items-end justify-around relative shadow-[0_4px_0_#4A3B32]">
+            <!-- Rakko (Sea Otter Master with Forehead Scar) -->
+            <div class="char-bounce flex flex-col items-center z-10">
+              <svg width="92" height="86" viewBox="0 0 110 96">
+                <!-- Round Otter Ears -->
+                <circle cx="24" cy="28" r="9" fill="#D2A679" stroke="#4A3B32" stroke-width="3.2"/>
+                <circle cx="86" cy="28" r="9" fill="#D2A679" stroke="#4A3B32" stroke-width="3.2"/>
+                <!-- Head & Body -->
+                <path d="M 20,54 C 16,24 94,24 90,54 C 94,76 86,90 72,92 L 38,92 C 24,90 16,76 20,54 Z" fill="#D2A679" stroke="#4A3B32" stroke-width="3.2"/>
+                <!-- Cream Muzzle Patch -->
+                <ellipse cx="55" cy="58" rx="22" ry="15" fill="#FFF8E7"/>
+                <!-- Cool Scar over Right Eye -->
+                <line x1="34" y1="36" x2="42" y2="54" stroke="#4A3B32" stroke-width="2.5"/>
+                <!-- Determined Eyes & Brows -->
+                <line x1="32" y1="42" x2="46" y2="46" stroke="#4A3B32" stroke-width="3" stroke-linecap="round"/>
+                <line x1="78" y1="42" x2="64" y2="46" stroke="#4A3B32" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="40" cy="51" r="4" fill="#4A3B32"/>
+                <circle cx="70" cy="51" r="4" fill="#4A3B32"/>
+                <!-- Otter Nose -->
+                <polygon points="51,54 59,54 55,59" fill="#4A3B32"/>
+                <path d="M 48,63 Q 55,59 62,63" fill="none" stroke="#4A3B32" stroke-width="2.8" stroke-linecap="round"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#E6C594] px-2 rounded-full border border-[#4A3B32] -mt-2">사부 랏코</span>
+            </div>
+
+            <!-- Kendama Illustration in Action -->
+            <div class="char-wiggle flex flex-col items-center mb-2 z-10">
+              <svg width="56" height="72" viewBox="0 0 60 80">
+                <!-- String -->
+                <path d="M 30,45 Q 48,30 30,18" fill="none" stroke="#4A3B32" stroke-width="2" stroke-dasharray="3 2"/>
+                <!-- Red Kendama Ball -->
+                <circle cx="30" cy="16" r="12" fill="#E04F44" stroke="#4A3B32" stroke-width="3"/>
+                <circle cx="26" cy="12" r="3" fill="#FFF"/>
+                <!-- Wooden Cross & Handle -->
+                <rect x="26" y="32" width="8" height="40" rx="3" fill="#DEB887" stroke="#4A3B32" stroke-width="2.8"/>
+                <rect x="14" y="42" width="32" height="10" rx="3" fill="#DEB887" stroke="#4A3B32" stroke-width="2.8"/>
+              </svg>
+              <span class="text-[10px] font-black text-[#E04F44] bg-[#FFF4CC] px-1.5 rounded border border-[#4A3B32]">3콤보 도전!</span>
+            </div>
+
+            <!-- Usagi Cheering -->
+            <div class="char-wiggle flex flex-col items-center z-10">
+              <svg width="84" height="86" viewBox="0 0 105 100">
+                <ellipse cx="38" cy="18" rx="7" ry="18" fill="#FFF0B8" stroke="#4A3B32" stroke-width="3.2"/>
+                <ellipse cx="67" cy="18" rx="7" ry="18" fill="#FFF0B8" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 22,58 C 18,32 87,32 83,58 C 87,78 81,92 68,94 L 37,94 C 24,92 18,78 22,58 Z" fill="#FFF0B8" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 25,39 Q 52,33 80,39" fill="none" stroke="#E04F44" stroke-width="4.5"/>
+                <circle cx="40" cy="55" r="4" fill="#4A3B32"/>
+                <circle cx="65" cy="55" r="4" fill="#4A3B32"/>
+                <path d="M 46,60 Q 52.5,68 59,60 Z" fill="#E04F44" stroke="#4A3B32" stroke-width="2.5"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#FFF0B8] px-2 rounded-full border border-[#4A3B32] -mt-2">명인 우사기</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE ROAD AREA -->
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+        <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 먹 향기 암자</button>
+        <button onclick="goToSlide(0)" class="pointer-events-auto bg-[#E04F44] text-white border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">🔄 처음으로</button>
+      </div>
+
+      <!-- BOTTOM SECTION: MENU + RAKKO & USAGI DIALOGUE -->
+      <div class="relative w-full max-w-md mx-auto h-[37dvh] flex flex-col justify-start z-20">
+        <div class="comic-box bg-white p-3.5">
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="bg-[#E6C594] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold">⚔️ 부스 5 · 켄다마 도장</span>
+            <span class="bg-[#FFF4CC] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black text-[#D93B30]">🔥 참가비 : 1포인트</span>
+            <span class="bg-[#FFE0E0] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-black text-[#E04F44]">🏆 3동작 원샷 성공 시 상품!</span>
+          </div>
+          <p class="text-base sm:text-lg font-bold text-[#3B2B20] leading-snug break-keep">
+            “우라 야하―!! 진정한 승부는 단 한 번의 기회에서 갈린다!<br/>
+            <span class="text-[#E04F44]">지정된 켄다마 동작 3개를 한 번에 연속 성공</span>하면 특별 상품을 하사하마! 단 1포인트로 4층 2-1반 최고 달인에 도전해라!!”
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= VISITOR NAME / POINT CUSTOMIZER MODAL ================= -->
+  <div id="visitor-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="comic-box bg-[#FFFDF7] w-full max-w-xs p-4">
+      <h3 class="font-title text-lg text-[#4A3B32] mb-2">🪪 마쯔리 통행증 정보 변경</h3>
+      <label class="block text-sm font-bold mb-1">방문자 이름 (닉네임)</label>
+      <input id="input-visitor-name" type="text" value="장훈고 학생" maxlength="10"
+             class="w-full border-2 border-[#4A3B32] rounded-xl px-3 py-1.5 text-base font-bold mb-3 bg-white focus:outline-none" />
+      <label class="block text-sm font-bold mb-1">보유 포인트 (P)</label>
+      <input id="input-visitor-points" type="number" value="12" min="0" max="999"
+             class="w-full border-2 border-[#4A3B32] rounded-xl px-3 py-1.5 text-base font-bold mb-4 bg-white focus:outline-none" />
+      <div class="flex gap-2">
+        <button onclick="closeVisitorModal()" class="flex-1 py-1.5 rounded-xl border-2 border-[#4A3B32] font-bold bg-gray-100">취소</button>
+        <button onclick="saveVisitorInfo()" class="flex-1 py-1.5 rounded-xl border-2 border-[#4A3B32] font-bold bg-[#F6C343] shadow-[0_2px_0_#4A3B32]">적용하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // --- 1. PAGE 1 DIALOGUE & 1.6-SECOND TYPEWRITER ENGINE ---
+    const page1Lines = [
+      "안녕~! 축제 전 10월 28일까지 점심시간에 '진로상담실'로 모여줘! 에헤헤~",
+      "일본 관련 피규어, 인형, 굿즈, 가챠가챠 등을 기부하면 장훈제에 사용 가능한 포인트를 줄게!",
+      "해당 포인트로 다른 학생이 기부한 보물 같은 물품 구매가 가능하거든~!",
+      "게다가 장훈제 체험 및 맛있는 먹거리 구매도 전부 가능! 오른쪽으로 스와이프해볼까? 👉"
+    ];
+
+    let p1Index = 0;
+    let isTyping = false;
+    let typingTimers = [];
+
+    function clearTypingTimers() {
+      typingTimers.forEach(t => clearTimeout(t));
+      typingTimers = [];
+    }
+
+    function playTypewriter(lineIndex) {
+      clearTypingTimers();
+      const textEl = document.getElementById('p1-typewriter');
+      const counterEl = document.getElementById('p1-counter');
+      const nextBtnEl = document.getElementById('p1-next-btn');
+
+      const fullText = page1Lines[lineIndex];
+      counterEl.textContent = `${lineIndex + 1} / ${page1Lines.length}`;
+      textEl.textContent = '';
+      isTyping = true;
+
+      // Exact 1.6 seconds (1600ms) spread across all characters
+      const chars = Array.from(fullText);
+      const totalDuration = 1600;
+      const stepTime = totalDuration / Math.max(chars.length, 1);
+
+      chars.forEach((ch, idx) => {
+        const timer = setTimeout(() => {
+          textEl.textContent += ch;
+          if (idx === chars.length - 1) {
+            isTyping = false;
+            nextBtnEl.textContent = lineIndex === page1Lines.length - 1
+              ? '오른쪽으로 스와이프 or 터치 ▶'
+              : '터치해서 다음 대사 ▶';
+          }
+        }, idx * stepTime);
+        typingTimers.push(timer);
+      });
+    }
+
+    function advancePage1Dialogue() {
+      const textEl = document.getElementById('p1-typewriter');
+      const nextBtnEl = document.getElementById('p1-next-btn');
+
+      // If currently typing, complete the current line immediately on first tap
+      if (isTyping) {
+        clearTypingTimers();
+        textEl.textContent = page1Lines[p1Index];
+        isTyping = false;
+        nextBtnEl.textContent = p1Index === page1Lines.length - 1
+          ? '오른쪽으로 스와이프 or 터치 ▶'
+          : '터치해서 다음 대사 ▶';
+        return;
+      }
+
+      // Advance to next line, or if at final line, loop back or prompt slide 2
+      if (p1Index < page1Lines.length - 1) {
+        p1Index++;
+        playTypewriter(p1Index);
+      } else {
+        p1Index = 0;
+        playTypewriter(0);
+      }
+    }
+
+    // --- 2. HORIZONTAL 7-SLIDE SWIPE & NAVIGATION ---
+    let currentSlide = 0;
+    const totalSlides = 7;
+    const sliderTrack = document.getElementById('slider-track');
+
+    function updateNavUI() {
+      const pills = document.querySelectorAll('.nav-pill');
+      pills.forEach((pill, i) => {
+        if (i === currentSlide) {
+          pill.className = 'nav-pill px-2.5 py-0.5 text-xs font-bold rounded-full border-2 border-[#4A3B32] bg-[#E04F44] text-white shadow-[0_2px_0_#4A3B32] transition-all';
+          pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        } else {
+          pill.className = 'nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] bg-white text-[#4A3B32] hover:bg-[#FFF0D6] transition-all';
+        }
+      });
+    }
+
+    function goToSlide(index) {
+      currentSlide = Math.max(0, Math.min(totalSlides - 1, index));
+      sliderTrack.style.transform = `translate3d(-${currentSlide * 100}vw, 0, 0)`;
+      updateNavUI();
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) goToSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) goToSlide(currentSlide - 1);
+    }
+
+    // Touch & Mouse Drag Swipe Support
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+
+    window.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      isDragging = true;
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const diffX = startX - endX;
+      const diffY = Math.abs(startY - endY);
+
+      if (Math.abs(diffX) > 45 && Math.abs(diffX) > diffY) {
+        if (diffX > 0) nextSlide();
+        else prevSlide();
+      }
+    }, { passive: true });
+
+    window.addEventListener('mousedown', (e) => {
+      if (e.target.closest('#visitor-modal') || e.target.closest('input')) return;
+      startX = e.clientX;
+      isDragging = true;
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      const diffX = startX - e.clientX;
+      if (Math.abs(diffX) > 65) {
+        if (diffX > 0) nextSlide();
+        else prevSlide();
+      }
+    });
+
+    // Keyboard Left/Right Arrow Support
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    // --- 3. PAGE 2 VISITOR NAME & POINT CUSTOMIZER ---
+    function openVisitorModal() {
+      const modal = document.getElementById('visitor-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeVisitorModal() {
+      const modal = document.getElementById('visitor-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function saveVisitorInfo() {
+      const nameVal = document.getElementById('input-visitor-name').value.trim() || '장훈고 학생';
+      const pointVal = document.getElementById('input-visitor-points').value || '0';
+
+      document.getElementById('visitor-name').textContent = nameVal;
+      document.getElementById('visitor-name-inline').textContent = nameVal;
+      document.getElementById('visitor-points').textContent = pointVal;
+      document.getElementById('visitor-points-inline').textContent = pointVal;
+      closeVisitorModal();
+    }
+
+    // URL Parameter support (?name=김장훈&point=25) so teachers/students can share personalized links!
+    function initUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const urlName = params.get('name');
+      const urlPoint = params.get('point') || params.get('points');
+      if (urlName) {
+        document.getElementById('visitor-name').textContent = urlName;
+        document.getElementById('visitor-name-inline').textContent = urlName;
+        document.getElementById('input-visitor-name').value = urlName;
+      }
+      if (urlPoint) {
+        document.getElementById('visitor-points').textContent = urlPoint;
+        document.getElementById('visitor-points-inline').textContent = urlPoint;
+        document.getElementById('input-visitor-points').value = urlPoint;
+      }
+    }
+
+    window.onload = () => {
+      initUrlParams();
+      updateNavUI();
+      playTypewriter(0);
+    };
+  </script>
+</body>
+</html>
