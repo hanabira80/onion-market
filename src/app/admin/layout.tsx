@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 
+import { WelcomeFrame } from "@/components/auth/welcome-frame"
 import { AdminNav } from "@/components/layout/admin-nav"
 import { SiteHeader } from "@/components/layout/site-header"
 import { getCurrentStudent } from "@/lib/auth"
@@ -27,10 +28,14 @@ export default async function AdminLayout({
   return (
     <>
       {student ? (
-        <SiteHeader
-          student={student}
-          points={student.kind === "student" ? (record?.pointsBalance ?? 0) : undefined}
-        />
+        <>
+          <SiteHeader
+            showWelcome={student.role === "admin"}
+            student={student}
+            points={student.kind === "student" ? (record?.pointsBalance ?? 0) : undefined}
+          />
+          {student.role === "admin" ? <WelcomeFrame /> : null}
+        </>
       ) : null}
       {student?.role === "admin" ? <AdminNav showStaff={isMaster} /> : null}
       {children}

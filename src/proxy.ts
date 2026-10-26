@@ -23,7 +23,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(url)
   }
 
-  if (session && isPublicPath(pathname) && pathname !== "/logout") {
+  if (
+    session &&
+    isPublicPath(pathname) &&
+    pathname !== "/logout" &&
+    pathname !== "/welcome"
+  ) {
     return NextResponse.redirect(new URL("/", request.url))
   }
 

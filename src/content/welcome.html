@@ -6,10 +6,12 @@
   <title>わくわく祭り | 장훈제 2-1반 일본어탐구반</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Japanese Traditional Brush/Serif & Cute Korean Storybook Fonts -->
+  <!-- 임시 CDN이다. 배포 전에는 src/fonts의 woff2와 next/font/local로 바꾼다. 눈누 CDN은 끊긴 적이 있고, 로컬 파일이 CLS와 로딩을 줄인다. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <!-- Google Fonts: Japanese signage + title only -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&family=Noto+Serif+JP:wght@700;900&family=Yuji+Syuku&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Serif+JP:wght@700;900&family=Yuji+Syuku&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -39,7 +41,9 @@
       overflow: hidden;
       background-color: var(--paper);
       color: var(--ink);
-      font-family: 'Gaegu', cursive, sans-serif;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* Storybook paper grain background */
@@ -80,10 +84,10 @@
       border-radius: 14px;
     }
 
-    /* Main 700vw Slider Track */
+    /* Main 800vw Slider Track */
     #slider-track {
       display: flex;
-      width: 700vw;
+      width: 800vw;
       height: 100dvh;
       transition: transform 0.58s cubic-bezier(0.22, 1, 0.36, 1);
       will-change: transform;
@@ -188,19 +192,30 @@
   <!-- ================= TOP NAVIGATION BAR ================= -->
   <header class="fixed top-0 left-0 w-full z-40 px-2 pt-2 pb-1 pointer-events-none">
     <div class="max-w-md mx-auto flex flex-col gap-1 pointer-events-auto">
-      <div class="flex items-center justify-center gap-1.5 bg-[#FFF9EA]/95 backdrop-blur-sm border-2 border-[#4A3B32] rounded-full px-2.5 py-1 shadow-[0_3px_0_#4A3B32]">
-        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#E04F44] border border-[#4A3B32]"></span>
-        <span class="font-title text-sm text-[#4A3B32] tracking-tight">와쿠와쿠 마쯔리 <span class="text-[#E04F44]">2-1</span></span>
+      <div class="relative flex min-h-8 w-full items-center justify-center">
+        <div class="flex items-center justify-center gap-1.5 bg-[#FFF9EA]/95 backdrop-blur-sm border-2 border-[#4A3B32] rounded-full px-2.5 py-1 shadow-[0_3px_0_#4A3B32]">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#E04F44] border border-[#4A3B32]"></span>
+          <span class="font-title text-sm text-[#4A3B32] tracking-tight">와쿠와쿠 마쯔리 <span class="text-[#E04F44]">2-1</span></span>
+        </div>
+        <button
+          id="hide-welcome"
+          type="button"
+          aria-label="웰컴 닫기"
+          onclick="hideWelcome(event)"
+          class="absolute right-0 top-1/2 z-10 -translate-y-1/2"
+          style="width:32px;height:32px;background:transparent;border:0;padding:0;"
+        ></button>
       </div>
       <!-- Quick Jump Dots/Tabs -->
-      <nav id="top-nav-dots" class="flex items-center justify-center gap-1 overflow-x-auto no-scrollbar bg-[#FFF9EA]/95 backdrop-blur-sm border-2 border-[#4A3B32] rounded-full px-2.5 py-1 shadow-[0_3px_0_#4A3B32]">
-        <button onclick="goToSlide(0)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">기부</button>
-        <button onclick="goToSlide(1)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">입구</button>
-        <button onclick="goToSlide(2)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">신사</button>
-        <button onclick="goToSlide(3)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">라면</button>
-        <button onclick="goToSlide(4)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">굿즈</button>
-        <button onclick="goToSlide(5)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">서예</button>
-        <button onclick="goToSlide(6)" class="nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">켄다마</button>
+      <nav id="top-nav-dots" class="flex items-center justify-center gap-0.5 overflow-x-auto no-scrollbar bg-[#FFF9EA]/95 backdrop-blur-sm border-2 border-[#4A3B32] rounded-full px-1.5 py-1 shadow-[0_3px_0_#4A3B32]">
+        <button onclick="goToSlide(0)" class="nav-pill px-1.5 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">기부</button>
+        <button onclick="goToSlide(1)" class="nav-pill px-1.5 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">입구</button>
+        <button onclick="goToSlide(2)" class="nav-pill px-1.5 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">신사</button>
+        <button onclick="goToSlide(3)" class="nav-pill px-1.5 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">라면</button>
+        <button onclick="goToSlide(4)" class="nav-pill px-1.5 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">굿즈</button>
+        <button onclick="goToSlide(5)" class="nav-pill px-1.5 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">서예</button>
+        <button onclick="goToSlide(6)" class="nav-pill px-1.5 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">켄다마</button>
+        <button onclick="goToSlide(7)" class="nav-pill px-1.5 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] transition-all">포인트</button>
       </nav>
     </div>
   </header>
@@ -208,15 +223,15 @@
   <!-- ================= FLOATING SAKURA / LANTERN PARTICLES ================= -->
   <div id="petal-container" class="fixed inset-0 pointer-events-none z-20 overflow-hidden"></div>
 
-  <!-- ================= MAIN 7-SLIDE HORIZONTAL TRACK ================= -->
+  <!-- ================= MAIN 8-SLIDE HORIZONTAL TRACK ================= -->
   <main id="slider-track">
 
     <!-- 
-      CONTINUOUS WINDING COUNTRY PATH OVERLAY (Spans all 700vw seamlessly!)
-      Placed across the middle of all 7 pages (approx 51% to 63% vertical height)
+      CONTINUOUS WINDING COUNTRY PATH OVERLAY (Spans all 800vw seamlessly!)
+      Placed across the middle of all 8 pages (approx 51% to 63% vertical height)
     -->
-    <div class="absolute left-0 top-[49.5%] w-[700vw] h-[13.5dvh] z-10 pointer-events-none">
-      <svg viewBox="0 0 7000 160" preserveAspectRatio="none" class="w-full h-full overflow-visible">
+    <div class="absolute left-0 top-[49.5%] w-[800vw] h-[13.5dvh] z-10 pointer-events-none">
+      <svg viewBox="0 0 8000 160" preserveAspectRatio="none" class="w-full h-full overflow-visible">
         <defs>
           <!-- Warm Country Dirt Road Gradient -->
           <linearGradient id="roadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -239,7 +254,8 @@
                  C 3340,35 3660,135 4000,85 
                  C 4330,35 4670,130 5000,85 
                  C 5350,35 5650,135 6000,85 
-                 C 6340,35 6680,125 7000,85"
+                 C 6340,35 6680,125 7000,85
+                 C 7340,35 7680,135 8000,85"
               fill="none" stroke="#C5DF9B" stroke-width="112" stroke-linecap="round" />
 
         <!-- Outer Dark Brown Comic Border of the Winding Road -->
@@ -250,7 +266,8 @@
                  C 3340,35 3660,135 4000,85 
                  C 4330,35 4670,130 5000,85 
                  C 5350,35 5650,135 6000,85 
-                 C 6340,35 6680,125 7000,85"
+                 C 6340,35 6680,125 7000,85
+                 C 7340,35 7680,135 8000,85"
               fill="none" stroke="#4A3B32" stroke-width="84" stroke-linecap="round" />
 
         <!-- Inner Sandy Country Road Fill -->
@@ -261,10 +278,11 @@
                  C 3340,35 3660,135 4000,85 
                  C 4330,35 4670,130 5000,85 
                  C 5350,35 5650,135 6000,85 
-                 C 6340,35 6680,125 7000,85"
+                 C 6340,35 6680,125 7000,85
+                 C 7340,35 7680,135 8000,85"
               fill="none" stroke="url(#roadGrad)" stroke-width="74" stroke-linecap="round" />
 
-        <!-- Cute Stepping Stones & Country Footpath Dashes along the entire 7000px road -->
+        <!-- Cute Stepping Stones & Country Footpath Dashes along the entire 8000px road -->
         <path d="M 0,85 
                  C 320,30 680,135 1000,85 
                  C 1320,35 1680,130 2000,85 
@@ -272,10 +290,11 @@
                  C 3340,35 3660,135 4000,85 
                  C 4330,35 4670,130 5000,85 
                  C 5350,35 5650,135 6000,85 
-                 C 6340,35 6680,125 7000,85"
+                 C 6340,35 6680,125 7000,85
+                 C 7340,35 7680,135 8000,85"
               fill="none" stroke="#BA9668" stroke-width="6" stroke-dasharray="18 28" stroke-linecap="round" opacity="0.65" />
 
-        <!-- Decorative Little Grass Tufts, Flowers & Pebbles along all 7 slides -->
+        <!-- Decorative Little Grass Tufts, Flowers & Pebbles along all 8 slides -->
         <g fill="#7CB342" stroke="#4A3B32" stroke-width="2.5">
           <circle cx="220" cy="28" r="7" fill="#FFB7C5"/>
           <circle cx="780" cy="142" r="6" fill="#FFE082"/>
@@ -291,6 +310,8 @@
           <circle cx="5780" cy="142" r="6" fill="#FFE082"/>
           <circle cx="6260" cy="32" r="7" fill="#FFB7C5"/>
           <circle cx="6780" cy="138" r="6" fill="#FFE082"/>
+          <circle cx="7260" cy="32" r="7" fill="#FFB7C5"/>
+          <circle cx="7780" cy="140" r="6" fill="#FFE082"/>
         </g>
       </svg>
     </div>
@@ -402,7 +423,7 @@
       </div>
 
       <!-- MIDDLE ROAD SPACE (12dvh reserved for the continuous SVG road + road sign hint) -->
-      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex flex-wrap items-center justify-between gap-1 px-3 z-20 pointer-events-none">
         <span class="bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">🐾 마쯔리 마을 입구길</span>
         <button onclick="nextSlide()" class="pointer-events-auto bg-[#E04F44] text-white border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32] active:translate-y-0.5">
           토리이 입구로 ➔
@@ -433,9 +454,9 @@
           <p id="p1-typewriter" class="text-lg sm:text-xl font-bold text-[#3B2B20] leading-snug break-keep min-h-[2.6rem]">
           </p>
 
-          <div class="flex items-center justify-between mt-2 pt-1.5 border-t border-dashed border-[#D8C7B2]">
+          <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 mt-2 pt-1.5 border-t border-dashed border-[#D8C7B2]">
             <span class="text-xs font-bold text-[#8A725E]">📅 ~10/28 점심 · 진로상담실</span>
-            <span id="p1-next-btn" class="text-xs sm:text-sm font-black text-[#E04F44] blink-arrow">
+            <span id="p1-next-btn" class="shrink-0 text-xs sm:text-sm font-black text-[#E04F44] blink-arrow">
               터치해서 다음 대사 ▶
             </span>
           </div>
@@ -516,7 +537,7 @@
       </div>
 
       <!-- MIDDLE ROAD AREA -->
-      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex flex-wrap items-center justify-between gap-1 px-3 z-20 pointer-events-none">
         <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">
           ⬅ 기부 안내
         </button>
@@ -528,8 +549,8 @@
       <!-- BOTTOM SECTION: VISITOR NAME + POINT WALLET & DESCRIPTION -->
       <div class="relative w-full max-w-md mx-auto h-[37dvh] flex flex-col justify-start z-20">
         <div class="comic-box bg-white p-3.5 relative">
-          <!-- Visitor Pass Header -->
-          <div class="flex flex-wrap items-center justify-between gap-1.5 bg-[#FFF6DD] border-2 border-[#4A3B32] rounded-xl px-3 py-1.5 mb-2">
+          <!-- Visitor Pass Header: 포인트 안내 임시 숨김 -->
+          <div class="hidden flex flex-wrap items-center justify-between gap-1.5 bg-[#FFF6DD] border-2 border-[#4A3B32] rounded-xl px-3 py-1.5 mb-2">
             <div class="flex items-center gap-1.5">
               <span class="text-sm font-black bg-[#E04F44] text-white px-2 py-0.5 rounded-md border border-[#4A3B32]">마쯔리 통행증</span>
               <span class="text-base sm:text-lg font-bold"><strong id="visitor-name" class="text-[#D93B30] underline">장훈고 학생</strong>님</span>
@@ -546,8 +567,8 @@
 
           <!-- Character Greeting Message -->
           <p class="text-base sm:text-lg font-bold text-[#3B2B20] leading-snug break-keep">
-            “와아…! <span id="visitor-name-inline" class="text-[#E04F44]">장훈고 학생</span>님 안녕하세요! 현재 보유 포인트는 <span id="visitor-points-inline" class="text-[#E04F44]">12</span>포인트입니다! 얏타~!<br/>
-            장훈제 당일 일본어탐구 동아리 부스는 <span class="bg-[#FFE082] px-1.5 rounded border border-[#4A3B32]">4층 2-1반 교실</span>로 오면 돼! 오른쪽으로 스와이프하면 축제를 미리 즐길 수 있다구~ 👉”
+            <span class="hidden">“와아…! <span id="visitor-name-inline" class="text-[#E04F44]">장훈고 학생</span>님 안녕하세요! 현재 보유 포인트는 <span id="visitor-points-inline" class="text-[#E04F44]">12</span>포인트입니다! 얏타~!”</span>
+            장훈제 당일 일본어탐구 동아리 부스는 <span class="bg-[#FFE082] px-1.5 rounded border border-[#4A3B32]">4층 2-1반 교실</span>로 오면 돼! 오른쪽으로 스와이프하면 축제를 미리 즐길 수 있다구~ 👉
           </p>
         </div>
       </div>
@@ -626,7 +647,7 @@
       </div>
 
       <!-- MIDDLE ROAD AREA -->
-      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex flex-wrap items-center justify-between gap-1 px-3 z-20 pointer-events-none">
         <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 입구 토리이</button>
         <button onclick="nextSlide()" class="pointer-events-auto bg-[#F6C343] border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">3분 승부 라면 ➔</button>
       </div>
@@ -741,7 +762,7 @@
       </div>
 
       <!-- MIDDLE ROAD AREA -->
-      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex flex-wrap items-center justify-between gap-1 px-3 z-20 pointer-events-none">
         <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 합격신사</button>
         <button onclick="nextSlide()" class="pointer-events-auto bg-[#F6C343] border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">아키하바라 골목 ➔</button>
       </div>
@@ -839,7 +860,7 @@
       </div>
 
       <!-- MIDDLE ROAD AREA -->
-      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex flex-wrap items-center justify-between gap-1 px-3 z-20 pointer-events-none">
         <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 3분 승부</button>
         <button onclick="nextSlide()" class="pointer-events-auto bg-[#F6C343] border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">먹 향기 암자 ➔</button>
       </div>
@@ -927,7 +948,7 @@
       </div>
 
       <!-- MIDDLE ROAD AREA -->
-      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex flex-wrap items-center justify-between gap-1 px-3 z-20 pointer-events-none">
         <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 아키하바라</button>
         <button onclick="nextSlide()" class="pointer-events-auto bg-[#F6C343] border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">켄다마 도장 ➔</button>
       </div>
@@ -1027,9 +1048,9 @@
       </div>
 
       <!-- MIDDLE ROAD AREA -->
-      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex items-center justify-between px-4 z-20 pointer-events-none">
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex flex-wrap items-center justify-between gap-1 px-3 z-20 pointer-events-none">
         <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 먹 향기 암자</button>
-        <button onclick="goToSlide(0)" class="pointer-events-auto bg-[#E04F44] text-white border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">🔄 처음으로</button>
+        <button onclick="nextSlide()" class="pointer-events-auto bg-[#F6C343] border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">포인트 안내 ➔</button>
       </div>
 
       <!-- BOTTOM SECTION: MENU + RAKKO & USAGI DIALOGUE -->
@@ -1043,6 +1064,85 @@
           <p class="text-base sm:text-lg font-bold text-[#3B2B20] leading-snug break-keep">
             “우라 야하―!! 진정한 승부는 단 한 번의 기회에서 갈린다!<br/>
             <span class="text-[#E04F44]">지정된 켄다마 동작 3개를 한 번에 연속 성공</span>하면 특별 상품을 하사하마! 단 1포인트로 4층 2-1반 최고 달인에 도전해라!!”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         PAGE 8: 포인트 안내 (1P = 500원 상당, 평균 4~6P)
+    ======================================================================== -->
+    <section class="slide-page pt-20 pb-3 px-3">
+      <div class="relative w-full max-w-md mx-auto h-[44dvh] flex flex-col items-center justify-end z-20">
+        <div class="relative w-full max-w-[350px] flex flex-col items-center">
+          <div class="w-[96%] h-7 bg-[#F6C343] border-[3px] border-[#4A3B32] rounded-t-2xl flex items-center justify-center shadow-sm">
+            <span class="text-[11px] font-black text-[#4A3B32]">🪙 와쿠와쿠 마쯔리 예산</span>
+          </div>
+
+          <div class="signboard-wood px-5 py-1.5 -mt-2 z-20 text-center min-w-[230px]">
+            <div class="font-jp-sign text-2xl sm:text-3xl font-black text-[#D93B30] leading-none">ポイント案内</div>
+            <div class="text-[11px] font-bold text-[#5C4938] bg-[#FFFDF7]/90 px-2 rounded-full inline-block mt-0.5 border border-[#4A3B32]/30">포인트 안내</div>
+          </div>
+
+          <div class="w-[90%] bg-[#FFF8E7] border-x-[3px] border-b-[3px] border-[#4A3B32] rounded-b-xl px-3 pt-2 pb-1 flex items-end justify-around relative shadow-[0_4px_0_#4A3B32]">
+            <div class="absolute left-2 top-0 bottom-0 w-2 bg-[#C88A52] border-r-2 border-[#4A3B32]"></div>
+            <div class="absolute right-2 top-0 bottom-0 w-2 bg-[#C88A52] border-l-2 border-[#4A3B32]"></div>
+
+            <div class="char-bounce flex flex-col items-center z-10">
+              <svg width="72" height="70" viewBox="0 0 100 95">
+                <polygon points="22,32 16,8 40,22" fill="#6CA6CD" stroke="#4A3B32" stroke-width="3.2"/>
+                <polygon points="78,32 84,8 60,22" fill="#6CA6CD" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 20,52 C 16,24 84,24 80,52 C 84,72 78,88 66,90 L 34,90 C 22,88 16,72 20,52 Z" fill="#FFF" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 21,40 C 30,24 44,28 50,40 C 56,28 70,24 79,40 C 75,24 62,20 50,21 C 38,20 25,24 21,40 Z" fill="#6CA6CD" stroke="#4A3B32" stroke-width="2.8"/>
+                <circle cx="38" cy="50" r="3.8" fill="#4A3B32"/>
+                <circle cx="62" cy="50" r="3.8" fill="#4A3B32"/>
+                <ellipse cx="29" cy="56" rx="5" ry="2.8" fill="#FFA8B8"/>
+                <ellipse cx="71" cy="56" rx="5" ry="2.8" fill="#FFA8B8"/>
+                <path d="M 44,54 Q 50,61 56,54 Z" fill="#FF8DA1" stroke="#4A3B32" stroke-width="2.2"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#C8E7FF] px-2 rounded-full border border-[#4A3B32] -mt-1">하치와레</span>
+            </div>
+
+            <div class="flex flex-col items-center gap-1 mb-2 z-10">
+              <div class="w-16 h-16 rounded-full bg-[#F6C343] border-[3px] border-[#4A3B32] shadow-[0_3px_0_#4A3B32] flex flex-col items-center justify-center">
+                <span class="font-title text-lg leading-none text-[#D93B30]">1P</span>
+                <span class="text-[10px] font-black text-[#4A3B32]">500원</span>
+              </div>
+              <span class="text-[10px] font-black text-[#4A3B32] bg-[#FFF4CC] px-1.5 rounded border border-[#4A3B32]">상당</span>
+            </div>
+
+            <div class="char-wiggle flex flex-col items-center z-10">
+              <svg width="72" height="70" viewBox="0 0 100 95">
+                <circle cx="26" cy="22" r="10" fill="#FFF" stroke="#4A3B32" stroke-width="3.2"/>
+                <circle cx="74" cy="22" r="10" fill="#FFF" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 20,52 C 16,24 84,24 80,52 C 84,72 78,88 66,90 L 34,90 C 22,88 16,72 20,52 Z" fill="#FFF" stroke="#4A3B32" stroke-width="3.2"/>
+                <path d="M 22,33 Q 50,27 78,33" fill="none" stroke="#E04F44" stroke-width="4.5"/>
+                <circle cx="38" cy="50" r="3.8" fill="#4A3B32"/>
+                <circle cx="62" cy="50" r="3.8" fill="#4A3B32"/>
+                <ellipse cx="29" cy="56" rx="5" ry="2.8" fill="#FF9EB5"/>
+                <ellipse cx="71" cy="56" rx="5" ry="2.8" fill="#FF9EB5"/>
+                <path d="M 46,55 Q 50,60 54,55" fill="none" stroke="#4A3B32" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              <span class="text-[11px] font-bold bg-[#FFD6E0] px-2 rounded-full border border-[#4A3B32] -mt-1">치이카와</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative w-full max-w-md mx-auto h-[11dvh] flex flex-wrap items-center justify-between gap-1 px-3 z-20 pointer-events-none">
+        <button onclick="prevSlide()" class="pointer-events-auto bg-[#FFF9EA] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">⬅ 켄다마 도장</button>
+        <button onclick="goToSlide(0)" class="pointer-events-auto bg-[#E04F44] text-white border-2 border-[#4A3B32] px-3 py-0.5 rounded-full text-xs font-bold shadow-[0_2px_0_#4A3B32]">🔄 처음으로</button>
+      </div>
+
+      <div class="relative w-full max-w-md mx-auto h-[37dvh] flex flex-col justify-start z-20">
+        <div class="comic-box bg-white p-3.5">
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="bg-[#FFF4CC] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-black text-[#D93B30]">1포인트 = 500원 상당</span>
+            <span class="bg-[#FFE0E0] border-2 border-[#4A3B32] px-2.5 py-0.5 rounded-full text-xs font-black text-[#E04F44]">평균 4~6P면 충분</span>
+          </div>
+          <p class="text-base sm:text-lg font-bold text-[#3B2B20] leading-snug break-keep">
+            “에헤헤~ 포인트는 이렇게 생각하면 돼!<br/>
+            <span class="text-[#E04F44]">1포인트는 500원 상당</span>이야. 와쿠와쿠 마쯔리를 즐기려면 <span class="bg-[#FFE082] px-1.5 rounded border border-[#4A3B32]">평균 4~6포인트</span> 정도면 충분하구나~!”
           </p>
         </div>
       </div>
@@ -1069,6 +1169,19 @@
 
   <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
+    function hideWelcome(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      try {
+        sessionStorage.setItem("onion-welcome-hidden", "1");
+      } catch (e) {}
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: "onion-welcome-hide" }, window.location.origin);
+        return;
+      }
+      window.location.assign("/admin");
+    }
+
     // --- 1. PAGE 1 DIALOGUE & 1.6-SECOND TYPEWRITER ENGINE ---
     const page1Lines = [
       "안녕~! 축제 전 10월 28일까지 점심시간에 '진로상담실'로 모여줘! 에헤헤~",
@@ -1141,19 +1254,19 @@
       }
     }
 
-    // --- 2. HORIZONTAL 7-SLIDE SWIPE & NAVIGATION ---
+    // --- 2. HORIZONTAL 8-SLIDE SWIPE & NAVIGATION ---
     let currentSlide = 0;
-    const totalSlides = 7;
+    const totalSlides = 8;
     const sliderTrack = document.getElementById('slider-track');
 
     function updateNavUI() {
       const pills = document.querySelectorAll('.nav-pill');
       pills.forEach((pill, i) => {
         if (i === currentSlide) {
-          pill.className = 'nav-pill px-2.5 py-0.5 text-xs font-bold rounded-full border-2 border-[#4A3B32] bg-[#E04F44] text-white shadow-[0_2px_0_#4A3B32] transition-all';
+          pill.className = 'nav-pill px-1.5 py-0.5 text-xs font-bold rounded-full border-2 border-[#4A3B32] bg-[#E04F44] text-white shadow-[0_2px_0_#4A3B32] transition-all';
           pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         } else {
-          pill.className = 'nav-pill px-2 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] bg-white text-[#4A3B32] hover:bg-[#FFF0D6] transition-all';
+          pill.className = 'nav-pill px-1.5 py-0.5 text-xs font-bold rounded-full border border-[#4A3B32] bg-white text-[#4A3B32] hover:bg-[#FFF0D6] transition-all';
         }
       });
     }
@@ -1198,7 +1311,7 @@
     }, { passive: true });
 
     window.addEventListener('mousedown', (e) => {
-      if (e.target.closest('#visitor-modal') || e.target.closest('input')) return;
+      if (e.target.closest('#visitor-modal') || e.target.closest('input') || e.target.closest('#hide-welcome')) return;
       startX = e.clientX;
       isDragging = true;
     });
