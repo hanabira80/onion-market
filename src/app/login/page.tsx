@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 
 import { LoginForm } from "@/app/login/login-form"
 import { AuthShell } from "@/components/auth/auth-shell"
+import { WelcomeFrame } from "@/components/auth/welcome-frame"
 import { getStudentCount } from "@/lib/roster"
 import { readSetup } from "@/lib/session"
 import { redirect } from "next/navigation"
@@ -33,11 +34,7 @@ export default async function LoginPage({
 
   return (
     <>
-      <iframe
-        src="/welcome"
-        title="わくわく祭り"
-        className="fixed inset-0 z-[9999] block h-dvh w-full border-0 bg-[#FFFDF7]"
-      />
+      <WelcomeFrame />
       <AuthShell
         title={showPassword ? "비밀번호 입력" : "학번 로그인"}
         description={
